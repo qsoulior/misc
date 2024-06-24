@@ -1,4 +1,4 @@
-package main
+package alg
 
 import "testing"
 
@@ -18,7 +18,7 @@ func TestBinarySearch(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := BinarySearch(tt.args.arr, tt.args.item); got != tt.want {
-				t.Errorf("binarySearch() = %v, want %v", got, tt.want)
+				t.Errorf("BinarySearch() = %v, want %v", got, tt.want)
 			}
 		})
 	}
