@@ -1,16 +1,32 @@
 package alg
 
+// Интерфейс связного списка.
+type List[T any] interface {
+	Len() int
+	Front() *Node[T]
+	Back() *Node[T]
+	Pop(*Node[T]) *Node[T]
+	PopFront() *Node[T]
+	PopBack() *Node[T]
+	InsertBefore(T, *Node[T]) *Node[T]
+	InsertAfter(T, *Node[T]) *Node[T]
+	PushFront(T) *Node[T]
+	PushBack(T) *Node[T]
+}
+
 // Узел связного списка.
 type Node[T any] struct {
 	prev  *Node[T]
 	next  *Node[T]
-	list  *DoublyLinkedList[T]
+	list  List[T]
 	Value T
 }
 
 // Получение предыдущего узла списка, работающее за O(1).
 func (n *Node[T]) Prev() *Node[T] {
-	if n.list == nil {
+	// Если узел не принадлежит списку или циклично ссылается на последний узел,
+	// возвращаем nil.
+	if n.list == nil || n.prev == n.list.Back() {
 		return nil
 	}
 	return n.prev
@@ -18,33 +34,35 @@ func (n *Node[T]) Prev() *Node[T] {
 
 // Получение следующего узла списка, работающее за O(1).
 func (n *Node[T]) Next() *Node[T] {
-	if n.list == nil {
+	// Если узел не принадлежит списку или циклично ссылается на первый узел,
+	// возвращаем nil.
+	if n.list == nil || n.next == n.list.Front() {
 		return nil
 	}
 	return n.next
 }
 
 // Обычный двусвязный список.
-type DoublyLinkedList[T any] struct {
+type LinkedList[T any] struct {
 	head *Node[T]
 	tail *Node[T]
 	len  int
 }
 
 // Конструктор двусвязного списка.
-func NewList[T any]() *DoublyLinkedList[T] { return &DoublyLinkedList[T]{len: 0} }
+func NewLinkedList[T any]() *LinkedList[T] { return &LinkedList[T]{len: 0} }
 
 // Получение длины списка, работающее за O(1).
-func (l DoublyLinkedList[T]) Len() int { return l.len }
+func (l LinkedList[T]) Len() int { return l.len }
 
 // Получение первого узла, работающее за O(1).
-func (l DoublyLinkedList[T]) Front() *Node[T] { return l.head }
+func (l LinkedList[T]) Front() *Node[T] { return l.head }
 
 // Получение последнего узла, работающее за O(1).
-func (l DoublyLinkedList[T]) Back() *Node[T] { return l.tail }
+func (l LinkedList[T]) Back() *Node[T] { return l.tail }
 
 // Извлечение/удаление произвольного узла, работающее за O(1).
-func (l *DoublyLinkedList[T]) Pop(node *Node[T]) *Node[T] {
+func (l *LinkedList[T]) Pop(node *Node[T]) *Node[T] {
 	if node == nil {
 		return nil
 	}
@@ -80,17 +98,13 @@ func (l *DoublyLinkedList[T]) Pop(node *Node[T]) *Node[T] {
 }
 
 // Извлечение/удаление первого узла, работающее за O(1).
-func (l *DoublyLinkedList[T]) PopFront() *Node[T] {
-	return l.Pop(l.head)
-}
+func (l *LinkedList[T]) PopFront() *Node[T] { return l.Pop(l.head) }
 
 // Извлечение/удаление последнего узла, работающее за O(1).
-func (l *DoublyLinkedList[T]) PopBack() *Node[T] {
-	return l.Pop(l.tail)
-}
+func (l *LinkedList[T]) PopBack() *Node[T] { return l.Pop(l.tail) }
 
 // Вставка перед узлом, работающая за O(1).
-func (l *DoublyLinkedList[T]) InsertBefore(value T, at *Node[T]) *Node[T] {
+func (l *LinkedList[T]) InsertBefore(value T, at *Node[T]) *Node[T] {
 	if at == nil || at.list != l {
 		return nil
 	}
@@ -118,7 +132,7 @@ func (l *DoublyLinkedList[T]) InsertBefore(value T, at *Node[T]) *Node[T] {
 }
 
 // Вставка после узла, работающая за O(1).
-func (l *DoublyLinkedList[T]) InsertAfter(value T, at *Node[T]) *Node[T] {
+func (l *LinkedList[T]) InsertAfter(value T, at *Node[T]) *Node[T] {
 	if at == nil || at.list != l {
 		return nil
 	}
@@ -146,7 +160,7 @@ func (l *DoublyLinkedList[T]) InsertAfter(value T, at *Node[T]) *Node[T] {
 }
 
 // Вставка в начало списка, работающая за O(1).
-func (l *DoublyLinkedList[T]) PushFront(value T) *Node[T] {
+func (l *LinkedList[T]) PushFront(value T) *Node[T] {
 	// Если список пустой, инициируем head и tail.
 	if l.head == nil {
 		node := &Node[T]{Value: value, list: l}
@@ -160,11 +174,124 @@ func (l *DoublyLinkedList[T]) PushFront(value T) *Node[T] {
 }
 
 // Вставка в конец списка, работающая за O(1).
-func (l *DoublyLinkedList[T]) PushBack(value T) *Node[T] {
+func (l *LinkedList[T]) PushBack(value T) *Node[T] {
 	// Если список пустой, вставляем узел в начало списка.
 	if l.tail == nil {
 		return l.PushFront(value)
 	}
 
 	return l.InsertAfter(value, l.tail)
+}
+
+// Кольцевой двусвязный список.
+type CircularLinkedList[T any] struct {
+	head *Node[T]
+	len  int
+}
+
+// Конструктор кольцевого двусвязного списка.
+func NewCircularLinkedList[T any]() *CircularLinkedList[T] { return &CircularLinkedList[T]{len: 0} }
+
+// Получение длины списка, работающее за O(1).
+func (l CircularLinkedList[T]) Len() int { return l.len }
+
+// Получение первого узла, работающее за O(1).
+func (l CircularLinkedList[T]) Front() *Node[T] { return l.head }
+
+// Получение последнего узла, работающее за O(1).
+func (l CircularLinkedList[T]) Back() *Node[T] {
+	if l.head == nil {
+		return nil
+	}
+	return l.head.prev
+}
+
+// Извлечение/удаление произвольного узла, работающее за O(1).
+func (l *CircularLinkedList[T]) Pop(node *Node[T]) *Node[T] {
+	if node == nil {
+		return nil
+	}
+
+	// Проверяем принадлежность к списку.
+	if node.list != l {
+		return node
+	}
+
+	// Отвязываем от соседних узлов.
+	node.prev.next = node.next
+	node.next.prev = node.prev
+
+	// Избегаем утечек памяти.
+	node.prev = nil
+	node.next = nil
+	node.list = nil
+
+	l.len--
+	return node
+}
+
+// Извлечение/удаление первого узла, работающее за O(1).
+func (l *CircularLinkedList[T]) PopFront() *Node[T] { return l.Pop(l.head) }
+
+// Извлечение/удаление последнего узла, работающее за O(1).
+func (l *CircularLinkedList[T]) PopBack() *Node[T] {
+	if l.head == nil {
+		return nil
+	}
+	return l.Pop(l.head.prev)
+}
+
+// Вставка перед узлом, работающая за O(1).
+func (l *CircularLinkedList[T]) InsertBefore(value T, at *Node[T]) *Node[T] {
+	if at == nil {
+		return nil
+	}
+
+	return l.InsertAfter(value, at.prev)
+}
+
+// Вставка после узла, работающая за O(1).
+func (l *CircularLinkedList[T]) InsertAfter(value T, at *Node[T]) *Node[T] {
+	if at == nil || at.list != l {
+		return nil
+	}
+
+	node := &Node[T]{
+		Value: value,
+		list:  l,
+		prev:  at,
+		next:  at.next,
+	}
+
+	// Связываем узел с предыдущим.
+	at.next.prev = node //
+	at.next = node
+
+	l.len++
+	return node
+}
+
+// Вставка в начало списка, работающая за O(1).
+func (l *CircularLinkedList[T]) PushFront(value T) *Node[T] {
+	// Если список пустой, инициируем head.
+	if l.head == nil {
+		node := &Node[T]{Value: value, list: l}
+		node.prev = node
+		node.next = node
+		l.head = node
+		l.len++
+		return node
+	}
+
+	return l.InsertBefore(value, l.head)
+}
+
+// Вставка в конец списка, работающая за O(1).
+func (l *CircularLinkedList[T]) PushBack(value T) *Node[T] {
+	// Если список пустой, вставляем узел в начало списка.
+	if l.head == nil {
+		return l.PushFront(value)
+	}
+
+	return l.InsertAfter(value, l.head.prev)
 }
