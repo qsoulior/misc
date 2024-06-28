@@ -1,4 +1,4 @@
-package alg
+package slice
 
 // Обычный бинарный поиск, работающий за O(log(n)).
 func BinarySearch[S ~[]E, E, T any](arr S, target T, cmp func(E, T) int) int {

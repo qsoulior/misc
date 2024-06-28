@@ -1,4 +1,4 @@
-package alg
+package slice
 
 import "testing"
 
