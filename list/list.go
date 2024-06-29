@@ -5,13 +5,13 @@ type List[T any] interface {
 	Len() int
 	Front() *Node[T]
 	Back() *Node[T]
-	Pop(*Node[T]) *Node[T]
+	Pop(node *Node[T]) *Node[T]
 	PopFront() *Node[T]
 	PopBack() *Node[T]
-	InsertBefore(T, *Node[T]) *Node[T]
-	InsertAfter(T, *Node[T]) *Node[T]
-	PushFront(T) *Node[T]
-	PushBack(T) *Node[T]
+	InsertBefore(value T, at *Node[T]) *Node[T]
+	InsertAfter(value T, at *Node[T]) *Node[T]
+	PushFront(value T) *Node[T]
+	PushBack(value T) *Node[T]
 }
 
 // Обычный двусвязный список.
@@ -20,9 +20,6 @@ type LinkedList[T any] struct {
 	tail *Node[T]
 	len  int
 }
-
-// Конструктор двусвязного списка.
-func NewLinkedList[T any]() *LinkedList[T] { return &LinkedList[T]{len: 0} }
 
 // Получение длины списка, работающее за O(1).
 func (l LinkedList[T]) Len() int { return l.len }
@@ -160,9 +157,6 @@ type CircularLinkedList[T any] struct {
 	head *Node[T]
 	len  int
 }
-
-// Конструктор кольцевого двусвязного списка.
-func NewCircularLinkedList[T any]() *CircularLinkedList[T] { return &CircularLinkedList[T]{len: 0} }
 
 // Получение длины списка, работающее за O(1).
 func (l CircularLinkedList[T]) Len() int { return l.len }

@@ -3,7 +3,7 @@ package list
 import "testing"
 
 func TestNode_Prev(t *testing.T) {
-	list := NewLinkedList[int]()
+	list := new(LinkedList[int])
 	head := list.PushFront(0)
 	tail := list.PushBack(0)
 
@@ -25,7 +25,7 @@ func TestNode_Prev(t *testing.T) {
 }
 
 func TestNode_Next(t *testing.T) {
-	list := NewLinkedList[int]()
+	list := new(LinkedList[int])
 	head := list.PushFront(0)
 	tail := list.PushBack(0)
 

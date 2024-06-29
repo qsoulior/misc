@@ -19,7 +19,7 @@ type Queue[T any] struct {
 }
 
 // Конструктор очереди.
-func NewQueue[T any]() *Queue[T] { return &Queue[T]{list.NewCircularLinkedList[T]()} }
+func NewQueue[T any]() *Queue[T] { return &Queue[T]{new(list.CircularLinkedList[T])} }
 
 func (q Queue[T]) Len() int { return q.data.Len() }
 

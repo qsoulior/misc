@@ -5,24 +5,8 @@ import (
 	"testing"
 )
 
-func TestNewLinkedList(t *testing.T) {
-	tests := []struct {
-		name string
-		want List[int]
-	}{
-		{"EmptyList", &LinkedList[int]{}},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := NewLinkedList[int](); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewLinkedList() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
 func TestLinkedList_Len(t *testing.T) {
-	list := NewLinkedList[int]()
+	list := new(LinkedList[int])
 	list.PushBack(0)
 
 	tests := []struct {
@@ -30,7 +14,7 @@ func TestLinkedList_Len(t *testing.T) {
 		l    List[int]
 		want int
 	}{
-		{"EmptyList", NewLinkedList[int](), 0},
+		{"EmptyList", new(LinkedList[int]), 0},
 		{"List", list, 1},
 	}
 	for _, tt := range tests {
@@ -43,7 +27,7 @@ func TestLinkedList_Len(t *testing.T) {
 }
 
 func TestLinkedList_Front(t *testing.T) {
-	list := NewLinkedList[int]()
+	list := new(LinkedList[int])
 	node := list.PushBack(0)
 
 	tests := []struct {
@@ -51,7 +35,7 @@ func TestLinkedList_Front(t *testing.T) {
 		l    List[int]
 		want *Node[int]
 	}{
-		{"EmptyList", NewLinkedList[int](), nil},
+		{"EmptyList", new(LinkedList[int]), nil},
 		{"List", list, node},
 	}
 	for _, tt := range tests {
@@ -64,7 +48,7 @@ func TestLinkedList_Front(t *testing.T) {
 }
 
 func TestLinkedList_Back(t *testing.T) {
-	list := NewLinkedList[int]()
+	list := new(LinkedList[int])
 	node := list.PushBack(0)
 
 	tests := []struct {
@@ -72,7 +56,7 @@ func TestLinkedList_Back(t *testing.T) {
 		l    List[int]
 		want *Node[int]
 	}{
-		{"EmptyList", NewLinkedList[int](), nil},
+		{"EmptyList", new(LinkedList[int]), nil},
 		{"List", list, node},
 	}
 	for _, tt := range tests {
@@ -85,7 +69,7 @@ func TestLinkedList_Back(t *testing.T) {
 }
 
 func TestLinkedList_Pop(t *testing.T) {
-	list := NewLinkedList[int]()
+	list := new(LinkedList[int])
 	headNode := list.PushBack(0)
 	innerNode := list.PushBack(0)
 	tailNode := list.PushBack(0)
@@ -116,7 +100,7 @@ func TestLinkedList_Pop(t *testing.T) {
 }
 
 func TestLinkedList_PopFront(t *testing.T) {
-	list := NewLinkedList[int]()
+	list := new(LinkedList[int])
 	head := list.PushBack(0)
 
 	tests := []struct {
@@ -124,7 +108,7 @@ func TestLinkedList_PopFront(t *testing.T) {
 		l    List[int]
 		want *Node[int]
 	}{
-		{"EmptyList", NewLinkedList[int](), nil},
+		{"EmptyList", new(LinkedList[int]), nil},
 		{"List", list, head},
 	}
 	for _, tt := range tests {
@@ -137,7 +121,7 @@ func TestLinkedList_PopFront(t *testing.T) {
 }
 
 func TestLinkedList_PopBack(t *testing.T) {
-	list := NewLinkedList[int]()
+	list := new(LinkedList[int])
 	tail := list.PushBack(0)
 
 	tests := []struct {
@@ -145,7 +129,7 @@ func TestLinkedList_PopBack(t *testing.T) {
 		l    List[int]
 		want *Node[int]
 	}{
-		{"EmptyList", NewLinkedList[int](), nil},
+		{"EmptyList", new(LinkedList[int]), nil},
 		{"List", list, tail},
 	}
 	for _, tt := range tests {
@@ -158,7 +142,7 @@ func TestLinkedList_PopBack(t *testing.T) {
 }
 
 func TestLinkedList_InsertBefore(t *testing.T) {
-	list := NewLinkedList[int]()
+	list := new(LinkedList[int])
 	headNode := list.PushBack(0)
 	tailNode := list.PushBack(0)
 
@@ -186,7 +170,7 @@ func TestLinkedList_InsertBefore(t *testing.T) {
 }
 
 func TestLinkedList_InsertAfter(t *testing.T) {
-	list := NewLinkedList[int]()
+	list := new(LinkedList[int])
 	headNode := list.PushBack(0)
 	tailNode := list.PushBack(0)
 
@@ -214,8 +198,8 @@ func TestLinkedList_InsertAfter(t *testing.T) {
 }
 
 func TestLinkedList_PushFront(t *testing.T) {
-	emptyList := NewLinkedList[int]()
-	list := NewLinkedList[int]()
+	emptyList := new(LinkedList[int])
+	list := new(LinkedList[int])
 	headNode := list.PushBack(0)
 
 	type args struct {
@@ -240,8 +224,8 @@ func TestLinkedList_PushFront(t *testing.T) {
 }
 
 func TestLinkedList_PushBack(t *testing.T) {
-	emptyList := NewLinkedList[int]()
-	list := NewLinkedList[int]()
+	emptyList := new(LinkedList[int])
+	list := new(LinkedList[int])
 	headNode := list.PushFront(0)
 
 	type args struct {
@@ -265,24 +249,8 @@ func TestLinkedList_PushBack(t *testing.T) {
 	}
 }
 
-func TestNewCircularLinkedList(t *testing.T) {
-	tests := []struct {
-		name string
-		want List[int]
-	}{
-		{"EmptyList", &CircularLinkedList[int]{}},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := NewCircularLinkedList[int](); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewCircularLinkedList() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
 func TestCircularLinkedList_Len(t *testing.T) {
-	list := NewCircularLinkedList[int]()
+	list := new(CircularLinkedList[int])
 	list.PushBack(0)
 
 	tests := []struct {
@@ -290,7 +258,7 @@ func TestCircularLinkedList_Len(t *testing.T) {
 		l    List[int]
 		want int
 	}{
-		{"EmptyList", NewCircularLinkedList[int](), 0},
+		{"EmptyList", new(CircularLinkedList[int]), 0},
 		{"List", list, 1},
 	}
 	for _, tt := range tests {
@@ -303,7 +271,7 @@ func TestCircularLinkedList_Len(t *testing.T) {
 }
 
 func TestCircularLinkedList_Front(t *testing.T) {
-	list := NewCircularLinkedList[int]()
+	list := new(CircularLinkedList[int])
 	node := list.PushBack(0)
 
 	tests := []struct {
@@ -311,7 +279,7 @@ func TestCircularLinkedList_Front(t *testing.T) {
 		l    List[int]
 		want *Node[int]
 	}{
-		{"EmptyList", NewCircularLinkedList[int](), nil},
+		{"EmptyList", new(CircularLinkedList[int]), nil},
 		{"List", list, node},
 	}
 	for _, tt := range tests {
@@ -324,7 +292,7 @@ func TestCircularLinkedList_Front(t *testing.T) {
 }
 
 func TestCircularLinkedList_Back(t *testing.T) {
-	list := NewCircularLinkedList[int]()
+	list := new(CircularLinkedList[int])
 	node := list.PushBack(0)
 
 	tests := []struct {
@@ -332,7 +300,7 @@ func TestCircularLinkedList_Back(t *testing.T) {
 		l    List[int]
 		want *Node[int]
 	}{
-		{"EmptyList", NewCircularLinkedList[int](), nil},
+		{"EmptyList", new(CircularLinkedList[int]), nil},
 		{"List", list, node},
 	}
 	for _, tt := range tests {
@@ -345,7 +313,7 @@ func TestCircularLinkedList_Back(t *testing.T) {
 }
 
 func TestCircularLinkedList_Pop(t *testing.T) {
-	list := NewCircularLinkedList[int]()
+	list := new(CircularLinkedList[int])
 	headNode := list.PushBack(0)
 	innerNode := list.PushBack(0)
 	tailNode := list.PushBack(0)
@@ -376,7 +344,7 @@ func TestCircularLinkedList_Pop(t *testing.T) {
 }
 
 func TestCircularLinkedList_PopFront(t *testing.T) {
-	list := NewCircularLinkedList[int]()
+	list := new(CircularLinkedList[int])
 	head := list.PushBack(0)
 
 	tests := []struct {
@@ -384,7 +352,7 @@ func TestCircularLinkedList_PopFront(t *testing.T) {
 		l    List[int]
 		want *Node[int]
 	}{
-		{"EmptyList", NewCircularLinkedList[int](), nil},
+		{"EmptyList", new(CircularLinkedList[int]), nil},
 		{"List", list, head},
 	}
 	for _, tt := range tests {
@@ -397,7 +365,7 @@ func TestCircularLinkedList_PopFront(t *testing.T) {
 }
 
 func TestCircularLinkedList_PopBack(t *testing.T) {
-	list := NewCircularLinkedList[int]()
+	list := new(CircularLinkedList[int])
 	tail := list.PushBack(0)
 
 	tests := []struct {
@@ -405,7 +373,7 @@ func TestCircularLinkedList_PopBack(t *testing.T) {
 		l    List[int]
 		want *Node[int]
 	}{
-		{"EmptyList", NewCircularLinkedList[int](), nil},
+		{"EmptyList", new(CircularLinkedList[int]), nil},
 		{"List", list, tail},
 	}
 	for _, tt := range tests {
@@ -418,7 +386,7 @@ func TestCircularLinkedList_PopBack(t *testing.T) {
 }
 
 func TestCircularLinkedList_InsertBefore(t *testing.T) {
-	list := NewCircularLinkedList[int]()
+	list := new(CircularLinkedList[int])
 	headNode := list.PushBack(0)
 	tailNode := list.PushBack(0)
 
@@ -446,7 +414,7 @@ func TestCircularLinkedList_InsertBefore(t *testing.T) {
 }
 
 func TestCircularLinkedList_InsertAfter(t *testing.T) {
-	list := NewCircularLinkedList[int]()
+	list := new(CircularLinkedList[int])
 	headNode := list.PushBack(0)
 	tailNode := list.PushBack(0)
 
@@ -474,8 +442,8 @@ func TestCircularLinkedList_InsertAfter(t *testing.T) {
 }
 
 func TestCircularLinkedList_PushFront(t *testing.T) {
-	emptyList := NewCircularLinkedList[int]()
-	list := NewCircularLinkedList[int]()
+	emptyList := new(CircularLinkedList[int])
+	list := new(CircularLinkedList[int])
 	tailNode := list.PushBack(0)
 
 	headNode := &Node[int]{Value: 0, list: emptyList}
@@ -504,8 +472,8 @@ func TestCircularLinkedList_PushFront(t *testing.T) {
 }
 
 func TestCircularLinkedList_PushBack(t *testing.T) {
-	emptyList := NewCircularLinkedList[int]()
-	list := NewCircularLinkedList[int]()
+	emptyList := new(CircularLinkedList[int])
+	list := new(CircularLinkedList[int])
 	headNode := list.PushFront(0)
 
 	tailNode := &Node[int]{Value: 0, list: emptyList}

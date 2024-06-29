@@ -38,7 +38,7 @@ func TestNewQueue(t *testing.T) {
 		name string
 		want *Queue[int]
 	}{
-		{"EmptyQueue", &Queue[int]{list.NewCircularLinkedList[int]()}},
+		{"EmptyQueue", &Queue[int]{new(list.CircularLinkedList[int])}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
