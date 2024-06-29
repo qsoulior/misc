@@ -13,30 +13,46 @@ func nodeValue[T any](node *list.Node[T]) (T, bool) {
 	return value, false
 }
 
+// Интерфейс обычной очереди.
+type Queue[T any] interface {
+	Len() int
+	Front() (T, bool)
+	Back() (T, bool)
+	PopFront() (T, bool)
+	PushBack(value T) T
+}
+
 // Обычная очередь, основанная на связном списке.
-type Queue[T any] struct {
+type queue[T any] struct {
 	data list.List[T]
 }
 
 // Конструктор очереди.
-func NewQueue[T any]() *Queue[T] { return &Queue[T]{new(list.CircularLinkedList[T])} }
+func NewQueue[T any]() *queue[T] { return &queue[T]{new(list.CircularLinkedList[T])} }
 
-func (q Queue[T]) Len() int { return q.data.Len() }
+func (q queue[T]) Len() int { return q.data.Len() }
 
-func (q Queue[T]) Front() (T, bool) { return nodeValue(q.data.Front()) }
+func (q queue[T]) Front() (T, bool) { return nodeValue(q.data.Front()) }
 
-func (q Queue[T]) Back() (T, bool) { return nodeValue(q.data.Back()) }
+func (q queue[T]) Back() (T, bool) { return nodeValue(q.data.Back()) }
 
-func (q *Queue[T]) PopFront() (T, bool) { return nodeValue(q.data.PopFront()) }
+func (q *queue[T]) PopFront() (T, bool) { return nodeValue(q.data.PopFront()) }
 
-func (q *Queue[T]) PushBack(value T) T { return q.data.PushBack(value).Value }
+func (q *queue[T]) PushBack(value T) T { return q.data.PushBack(value).Value }
+
+// Интерфейс двусторонней очереди.
+type Deque[T any] interface {
+	Queue[T]
+	PopBack() (T, bool)
+	PushFront(value T) T
+}
 
 // Двусторонняя очередь, основанная на связном списке.
-type Deque[T any] struct{ *Queue[T] }
+type deque[T any] struct{ *queue[T] }
 
 // Конструктор двусторонней очереди.
-func NewDeque[T any]() *Deque[T] { return &Deque[T]{NewQueue[T]()} }
+func NewDeque[T any]() *deque[T] { return &deque[T]{NewQueue[T]()} }
 
-func (d *Deque[T]) PopBack() (T, bool) { return nodeValue(d.data.PopBack()) }
+func (d *deque[T]) PopBack() (T, bool) { return nodeValue(d.data.PopBack()) }
 
-func (d *Deque[T]) PushFront(value T) T { return d.data.PushFront(value).Value }
+func (d *deque[T]) PushFront(value T) T { return d.data.PushFront(value).Value }

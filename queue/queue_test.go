@@ -36,9 +36,9 @@ func Test_nodeValue(t *testing.T) {
 func TestNewQueue(t *testing.T) {
 	tests := []struct {
 		name string
-		want *Queue[int]
+		want Queue[int]
 	}{
-		{"EmptyQueue", &Queue[int]{new(list.CircularLinkedList[int])}},
+		{"EmptyQueue", &queue[int]{new(list.CircularLinkedList[int])}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -55,7 +55,7 @@ func TestQueue_Len(t *testing.T) {
 
 	tests := []struct {
 		name string
-		q    *Queue[int]
+		q    Queue[int]
 		want int
 	}{
 		{"EmptyQueue", NewQueue[int](), 0},
@@ -76,7 +76,7 @@ func TestQueue_Front(t *testing.T) {
 
 	tests := []struct {
 		name  string
-		q     *Queue[int]
+		q     Queue[int]
 		want  int
 		want1 bool
 	}{
@@ -102,7 +102,7 @@ func TestQueue_Back(t *testing.T) {
 
 	tests := []struct {
 		name  string
-		q     *Queue[int]
+		q     Queue[int]
 		want  int
 		want1 bool
 	}{
@@ -128,7 +128,7 @@ func TestQueue_PopFront(t *testing.T) {
 
 	tests := []struct {
 		name  string
-		q     *Queue[int]
+		q     Queue[int]
 		want  int
 		want1 bool
 	}{
@@ -157,7 +157,7 @@ func TestQueue_PushBack(t *testing.T) {
 	}
 	tests := []struct {
 		name string
-		q    *Queue[int]
+		q    Queue[int]
 		args args
 		want int
 	}{
@@ -176,9 +176,9 @@ func TestQueue_PushBack(t *testing.T) {
 func TestNewDeque(t *testing.T) {
 	tests := []struct {
 		name string
-		want *Deque[int]
+		want Deque[int]
 	}{
-		{"EmptyQueue", &Deque[int]{NewQueue[int]()}},
+		{"EmptyQueue", &deque[int]{NewQueue[int]()}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -195,7 +195,7 @@ func TestDeque_PopBack(t *testing.T) {
 
 	tests := []struct {
 		name  string
-		d     *Deque[int]
+		d     Deque[int]
 		want  int
 		want1 bool
 	}{
@@ -221,7 +221,7 @@ func TestDeque_PushFront(t *testing.T) {
 	}
 	tests := []struct {
 		name string
-		d    *Deque[int]
+		d    Deque[int]
 		args args
 		want int
 	}{
