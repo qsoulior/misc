@@ -183,6 +183,11 @@ func (l *CircularLinkedList[T]) Pop(node *Node[T]) *Node[T] {
 		return node
 	}
 
+	// Если узел первый, обновляем head.
+	if node == l.head {
+		l.head = node.Next() // если head ссылается на себя, Next() возвращает nil
+	}
+
 	// Отвязываем от соседних узлов.
 	node.prev.next = node.next
 	node.next.prev = node.prev
@@ -230,7 +235,7 @@ func (l *CircularLinkedList[T]) InsertAfter(value T, at *Node[T]) *Node[T] {
 	}
 
 	// Связываем узел с предыдущим.
-	at.next.prev = node //
+	at.next.prev = node
 	at.next = node
 
 	l.len++

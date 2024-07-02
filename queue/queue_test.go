@@ -162,6 +162,7 @@ func TestQueue_PushBack(t *testing.T) {
 		want int
 	}{
 		{"EmptyQueue", NewQueue[int](), args{0}, 0},
+		{"Queue", queue, args{0}, 0},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
