@@ -5,11 +5,13 @@ import (
 	"testing"
 )
 
-func simpleItem() *priorityItem[int] { return &priorityItem[int]{value: 0, priority: 2, index: 0} }
+func simplePriorityItem() *priorityItem[int] {
+	return &priorityItem[int]{value: 0, priority: 2, index: 0}
+}
 
-func emptySlice() prioritySlice[int] { return make(prioritySlice[int], 0) }
+func emptyPrioritySlice() prioritySlice[int] { return make(prioritySlice[int], 0) }
 
-func simpleSlice() prioritySlice[int] {
+func simplePrioritySlice() prioritySlice[int] {
 	h := make(prioritySlice[int], 0)
 	h.Push(&priorityItem[int]{value: 1, priority: 2, index: 0})
 	h.Push(&priorityItem[int]{value: 2, priority: 3, index: 1})
@@ -17,9 +19,9 @@ func simpleSlice() prioritySlice[int] {
 	return h
 }
 
-func emptyQueue() PriorityQueue[int] { return NewPriorityQueue[int]() }
+func emptyPriorityQueue() PriorityQueue[int] { return NewPriorityQueue[int]() }
 
-func simpleQueue() PriorityQueue[int] {
+func simplePriorityQueue() PriorityQueue[int] {
 	pq := NewPriorityQueue[int]()
 	pq.Push(1, 2)
 	pq.Push(2, 3)
@@ -49,8 +51,8 @@ func TestPriorityQueue_Len(t *testing.T) {
 		p    PriorityQueue[int]
 		want int
 	}{
-		{"EmptyQueue", emptyQueue(), 0},
-		{"SimpleQueue", simpleQueue(), 3},
+		{"EmptyQueue", emptyPriorityQueue(), 0},
+		{"SimpleQueue", simplePriorityQueue(), 3},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -68,8 +70,8 @@ func TestPriorityQueue_Front(t *testing.T) {
 		want  int
 		want1 bool
 	}{
-		{"EmptyQueue", emptyQueue(), 0, false},
-		{"SimpleQueue", simpleQueue(), 2, true},
+		{"EmptyQueue", emptyPriorityQueue(), 0, false},
+		{"SimpleQueue", simplePriorityQueue(), 2, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -91,8 +93,8 @@ func TestPriorityQueue_PopFront(t *testing.T) {
 		want  int
 		want1 bool
 	}{
-		{"EmptyQueue", emptyQueue(), 0, false},
-		{"SimpleQueue", simpleQueue(), 2, true},
+		{"EmptyQueue", emptyPriorityQueue(), 0, false},
+		{"SimpleQueue", simplePriorityQueue(), 2, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -118,8 +120,8 @@ func TestPriorityQueue_Push(t *testing.T) {
 		args args
 		want int
 	}{
-		{"EmptyQueue", emptyQueue(), args{4, 0}, 4},
-		{"SimpleQueue", simpleQueue(), args{4, 0}, 4},
+		{"EmptyQueue", emptyPriorityQueue(), args{4, 0}, 4},
+		{"SimpleQueue", simplePriorityQueue(), args{4, 0}, 4},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -136,8 +138,8 @@ func Test_prioritySlice_Len(t *testing.T) {
 		h    prioritySlice[int]
 		want int
 	}{
-		{"EmptySlice", emptySlice(), 0},
-		{"SimpleSlice", simpleSlice(), 3},
+		{"EmptySlice", emptyPrioritySlice(), 0},
+		{"SimpleSlice", simplePrioritySlice(), 3},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -159,8 +161,8 @@ func Test_prioritySlice_Less(t *testing.T) {
 		args args
 		want bool
 	}{
-		{"LowerPriority", simpleSlice(), args{0, 1}, false},
-		{"HigherPriority", simpleSlice(), args{1, 2}, true},
+		{"LowerPriority", simplePrioritySlice(), args{0, 1}, false},
+		{"HigherPriority", simplePrioritySlice(), args{1, 2}, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -183,7 +185,7 @@ func Test_prioritySlice_Swap(t *testing.T) {
 		want  int
 		want1 int
 	}{
-		{"SimpleSlice", simpleSlice(), args{0, 2}, 3, 0},
+		{"SimpleSlice", simplePrioritySlice(), args{0, 2}, 3, 0},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -209,8 +211,8 @@ func Test_prioritySlice_Push(t *testing.T) {
 		args args
 		want int
 	}{
-		{"EmptySlice", emptySlice(), args{simpleItem()}, 0},
-		{"SimpleSlice", simpleSlice(), args{simpleItem()}, 1},
+		{"EmptySlice", emptyPrioritySlice(), args{simplePriorityItem()}, 0},
+		{"SimpleSlice", simplePrioritySlice(), args{simplePriorityItem()}, 1},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -228,7 +230,7 @@ func Test_prioritySlice_Pop(t *testing.T) {
 		h    prioritySlice[int]
 		want any
 	}{
-		{"SimpleSlice", simpleSlice(), &priorityItem[int]{value: 3, priority: 1, index: -1}},
+		{"SimpleSlice", simplePrioritySlice(), &priorityItem[int]{value: 3, priority: 1, index: -1}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
