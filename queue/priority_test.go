@@ -6,16 +6,16 @@ import (
 )
 
 func simplePriorityItem() *priorityItem[int] {
-	return &priorityItem[int]{value: 0, priority: 2, index: 0}
+	return &priorityItem[int]{value: 0, priority: 2}
 }
 
 func emptyPrioritySlice() prioritySlice[int] { return make(prioritySlice[int], 0) }
 
 func simplePrioritySlice() prioritySlice[int] {
 	h := make(prioritySlice[int], 0)
-	h.Push(&priorityItem[int]{value: 1, priority: 2, index: 0})
-	h.Push(&priorityItem[int]{value: 2, priority: 3, index: 1})
-	h.Push(&priorityItem[int]{value: 3, priority: 1, index: 2})
+	h.Push(&priorityItem[int]{value: 1, priority: 2})
+	h.Push(&priorityItem[int]{value: 2, priority: 3})
+	h.Push(&priorityItem[int]{value: 3, priority: 1})
 	return h
 }
 
@@ -68,19 +68,23 @@ func TestPriorityQueue_Front(t *testing.T) {
 		name  string
 		p     PriorityQueue[int]
 		want  int
-		want1 bool
+		want1 int
+		want2 bool
 	}{
-		{"EmptyQueue", emptyPriorityQueue(), 0, false},
-		{"SimpleQueue", simplePriorityQueue(), 2, true},
+		{"EmptyQueue", emptyPriorityQueue(), 0, 0, false},
+		{"SimpleQueue", simplePriorityQueue(), 2, 3, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, got1 := tt.p.Front()
+			got, got1, got2 := tt.p.Front()
 			if got != tt.want {
 				t.Errorf("PriorityQueue.Front() got = %v, want %v", got, tt.want)
 			}
 			if got1 != tt.want1 {
 				t.Errorf("PriorityQueue.Front() got1 = %v, want %v", got1, tt.want1)
+			}
+			if got2 != tt.want2 {
+				t.Errorf("PriorityQueue.Front() got2 = %v, want %v", got2, tt.want2)
 			}
 		})
 	}
@@ -91,19 +95,23 @@ func TestPriorityQueue_PopFront(t *testing.T) {
 		name  string
 		p     PriorityQueue[int]
 		want  int
-		want1 bool
+		want1 int
+		want2 bool
 	}{
-		{"EmptyQueue", emptyPriorityQueue(), 0, false},
-		{"SimpleQueue", simplePriorityQueue(), 2, true},
+		{"EmptyQueue", emptyPriorityQueue(), 0, 0, false},
+		{"SimpleQueue", simplePriorityQueue(), 2, 3, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, got1 := tt.p.PopFront()
+			got, got1, got2 := tt.p.PopFront()
 			if got != tt.want {
 				t.Errorf("PriorityQueue.PopFront() got = %v, want %v", got, tt.want)
 			}
 			if got1 != tt.want1 {
 				t.Errorf("PriorityQueue.PopFront() got1 = %v, want %v", got1, tt.want1)
+			}
+			if got2 != tt.want2 {
+				t.Errorf("PriorityQueue.PopFront() got2 = %v, want %v", got2, tt.want2)
 			}
 		})
 	}
@@ -179,23 +187,19 @@ func Test_prioritySlice_Swap(t *testing.T) {
 		j int
 	}
 	tests := []struct {
-		name  string
-		h     prioritySlice[int]
-		args  args
-		want  int
-		want1 int
+		name string
+		h    prioritySlice[int]
+		args args
+		want int
 	}{
-		{"SimpleSlice", simplePrioritySlice(), args{0, 2}, 3, 0},
+		{"SimpleSlice", simplePrioritySlice(), args{0, 2}, 3},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.h.Swap(tt.args.i, tt.args.j)
-			got, got1 := tt.h[0].value, tt.h[0].index
+			got := tt.h[0].value
 			if got != tt.want {
 				t.Errorf("prioritySlice.Swap() got = %v, want %v", got, tt.want)
-			}
-			if got1 != tt.want1 {
-				t.Errorf("prioritySlice.Swap() got1 = %v, want %v", got1, tt.want1)
 			}
 		})
 	}
@@ -230,7 +234,7 @@ func Test_prioritySlice_Pop(t *testing.T) {
 		h    prioritySlice[int]
 		want any
 	}{
-		{"SimpleSlice", simplePrioritySlice(), &priorityItem[int]{value: 3, priority: 1, index: -1}},
+		{"SimpleSlice", simplePrioritySlice(), &priorityItem[int]{value: 3, priority: 1}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

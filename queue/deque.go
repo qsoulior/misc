@@ -1,17 +1,18 @@
 package queue
 
-// Интерфейс двусторонней очереди.
+import "github.com/qsoulior/alg/list"
+
+// Double-ended queue interface.
 type Deque[T any] interface {
 	Queue[T]
 	PopBack() (T, bool)
 	PushFront(value T) T
 }
 
-// Двусторонняя очередь, основанная на связном списке.
+// Double-ended queue based on linked list.
 type deque[T any] struct{ *queue[T] }
 
-// Конструктор двусторонней очереди.
-func NewDeque[T any]() *deque[T] { return &deque[T]{NewQueue[T]()} }
+func NewDeque[T any]() Deque[T] { return &deque[T]{&queue[T]{new(list.CircularLinkedList[T])}} }
 
 func (d *deque[T]) PopBack() (T, bool) { return nodeValue(d.data.PopBack()) }
 
