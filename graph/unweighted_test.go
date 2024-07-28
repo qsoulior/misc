@@ -2,9 +2,9 @@ package graph
 
 import "testing"
 
-func emptyGraph() UnweightedGraph[string] { return make(UnweightedGraph[string]) }
+func emptyUnweightedGraph() UnweightedGraph[string] { return make(UnweightedGraph[string]) }
 
-func graph() UnweightedGraph[string] {
+func simpleUnweightedGraph() UnweightedGraph[string] {
 	return UnweightedGraph[string]{
 		"you":    []string{"bob", "claire", "jane"},
 		"bob":    []string{"anuj", "peggy"},
@@ -16,7 +16,7 @@ func graph() UnweightedGraph[string] {
 	}
 }
 
-func cmp(value string) bool { return len(value) > 0 && value[0] == 'j' }
+func unweightedCmp(value string) bool { return len(value) > 0 && value[0] == 'j' }
 
 func TestUnweightedGraph_BFS(t *testing.T) {
 	type args struct {
@@ -30,8 +30,8 @@ func TestUnweightedGraph_BFS(t *testing.T) {
 		want  string
 		want1 bool
 	}{
-		{"EmptyGraph", emptyGraph(), args{"you", cmp}, "", false},
-		{"Graph", graph(), args{"you", cmp}, "jane", true},
+		{"EmptyGraph", emptyUnweightedGraph(), args{"you", unweightedCmp}, "", false},
+		{"SimpleGraph", simpleUnweightedGraph(), args{"you", unweightedCmp}, "jane", true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -58,8 +58,8 @@ func TestUnweightedGraph_DFS(t *testing.T) {
 		want  string
 		want1 bool
 	}{
-		{"EmptyGraph", emptyGraph(), args{"you", cmp}, "", false},
-		{"Graph", graph(), args{"you", cmp}, "jonny", true},
+		{"EmptyGraph", emptyUnweightedGraph(), args{"you", unweightedCmp}, "", false},
+		{"SimpleGraph", simpleUnweightedGraph(), args{"you", unweightedCmp}, "jonny", true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

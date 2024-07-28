@@ -7,6 +7,7 @@ import (
 
 type UnweightedGraph[T comparable] map[T][]T
 
+// Breadth-first search, O(n+m).
 func (g UnweightedGraph[T]) BFS(start T, cmp func(value T) bool) (T, bool) {
 	deque := queue.NewDeque[T]()
 	enqueued := make(set.HashSet[T])
@@ -34,6 +35,7 @@ func (g UnweightedGraph[T]) BFS(start T, cmp func(value T) bool) (T, bool) {
 	return value, false
 }
 
+// Depth-first search, O(n+m).
 func (g UnweightedGraph[T]) DFS(start T, cmp func(value T) bool) (T, bool) {
 	deque := queue.NewDeque[T]()
 	enqueued := make(set.HashSet[T])
