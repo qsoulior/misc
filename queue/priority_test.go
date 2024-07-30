@@ -5,41 +5,67 @@ import (
 	"testing"
 )
 
-func simplePriorityItem() *priorityItem[int] {
-	return &priorityItem[int]{value: 0, priority: 2}
+func simplePriorityItem() *PriorityItem[int] { return &PriorityItem[int]{value: 0, priority: 2} }
+
+func emptyMinPrioritySlice() minPrioritySlice[int] { return make(minPrioritySlice[int], 0) }
+
+func simpleMinPrioritySlice() minPrioritySlice[int] {
+	return minPrioritySlice[int]{
+		&PriorityItem[int]{value: 3, priority: 1},
+		&PriorityItem[int]{value: 1, priority: 2},
+		&PriorityItem[int]{value: 2, priority: 3},
+	}
 }
 
-func emptyPrioritySlice() prioritySlice[int] { return make(prioritySlice[int], 0) }
+func emptyMaxPrioritySlice() maxPrioritySlice[int] { return maxPrioritySlice[int]{} }
 
-func simplePrioritySlice() prioritySlice[int] {
-	h := make(prioritySlice[int], 0)
-	h.Push(&priorityItem[int]{value: 1, priority: 2})
-	h.Push(&priorityItem[int]{value: 2, priority: 3})
-	h.Push(&priorityItem[int]{value: 3, priority: 1})
-	return h
+func simpleMaxPrioritySlice() maxPrioritySlice[int] {
+	return maxPrioritySlice[int]{
+		minPrioritySlice[int]{
+			&PriorityItem[int]{value: 2, priority: 3},
+			&PriorityItem[int]{value: 1, priority: 2},
+			&PriorityItem[int]{value: 3, priority: 1},
+		},
+	}
 }
 
-func emptyPriorityQueue() PriorityQueue[int] { return NewPriorityQueue[int]() }
+func emptyPriorityQueue() PriorityQueue[int] { return NewMaxPriorityQueue[int]() }
 
 func simplePriorityQueue() PriorityQueue[int] {
-	pq := NewPriorityQueue[int]()
+	pq := NewMaxPriorityQueue[int]()
 	pq.Push(1, 2)
 	pq.Push(2, 3)
 	pq.Push(3, 1)
 	return pq
 }
 
-func TestNewPriorityQueue(t *testing.T) {
+func TestNewMinPriorityQueue(t *testing.T) {
 	tests := []struct {
 		name string
 		want PriorityQueue[int]
 	}{
-		{"EmptyQueue", &priorityQueue[int]{make(prioritySlice[int], 0)}},
+		{"EmptyQueue", &priorityQueue[int]{new(minPrioritySlice[int])}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewPriorityQueue[int](); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewPriorityQueue() = %v, want %v", got, tt.want)
+			if got := NewMinPriorityQueue[int](); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewMinPriorityQueue() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestNewMaxPriorityQueue(t *testing.T) {
+	tests := []struct {
+		name string
+		want PriorityQueue[int]
+	}{
+		{"EmptyQueue", &priorityQueue[int]{new(maxPrioritySlice[int])}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := NewMaxPriorityQueue[int](); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewMaxPriorityQueue() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -123,123 +149,167 @@ func TestPriorityQueue_Push(t *testing.T) {
 		priority int
 	}
 	tests := []struct {
-		name string
-		p    PriorityQueue[int]
-		args args
-		want int
+		name  string
+		p     PriorityQueue[int]
+		args  args
+		want  int
+		want1 int
 	}{
-		{"EmptyQueue", emptyPriorityQueue(), args{4, 0}, 4},
-		{"SimpleQueue", simplePriorityQueue(), args{4, 0}, 4},
+		{"EmptyQueue", emptyPriorityQueue(), args{4, 0}, 4, 0},
+		{"SimpleQueue", simplePriorityQueue(), args{4, 0}, 4, 0},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.p.Push(tt.args.value, tt.args.priority); got != tt.want {
+			got, got1 := tt.p.Push(tt.args.value, tt.args.priority)
+			if got != tt.want {
 				t.Errorf("PriorityQueue.PushBack() = %v, want %v", got, tt.want)
+			}
+			if got1 != tt.want1 {
+				t.Errorf("PriorityQueue.PushBack() = %v, want1 %v", got1, tt.want1)
 			}
 		})
 	}
 }
 
-func Test_prioritySlice_Len(t *testing.T) {
+func Test_minPrioritySlice_Len(t *testing.T) {
 	tests := []struct {
 		name string
-		h    prioritySlice[int]
+		h    minPrioritySlice[int]
 		want int
 	}{
-		{"EmptySlice", emptyPrioritySlice(), 0},
-		{"SimpleSlice", simplePrioritySlice(), 3},
+		{"EmptySlice", emptyMinPrioritySlice(), 0},
+		{"SimpleSlice", simpleMinPrioritySlice(), 3},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := tt.h.Len(); got != tt.want {
-				t.Errorf("prioritySlice.Len() = %v, want %v", got, tt.want)
+				t.Errorf("minPrioritySlice.Len() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_prioritySlice_Less(t *testing.T) {
-	type args struct {
-		i int
-		j int
-	}
+func Test_minPrioritySlice_First(t *testing.T) {
 	tests := []struct {
 		name string
-		h    prioritySlice[int]
-		args args
-		want bool
+		h    minPrioritySlice[int]
+		want *PriorityItem[int]
 	}{
-		{"LowerPriority", simplePrioritySlice(), args{0, 1}, false},
-		{"HigherPriority", simplePrioritySlice(), args{1, 2}, true},
+		{"SimpleSlice", simpleMinPrioritySlice(), &PriorityItem[int]{value: 3, priority: 1}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.h.Less(tt.args.i, tt.args.j); got != tt.want {
-				t.Errorf("prioritySlice.Less() = %v, want %v", got, tt.want)
+			if got := tt.h.First(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("minPrioritySlice.First() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_prioritySlice_Swap(t *testing.T) {
+func Test_minPrioritySlice_Swap(t *testing.T) {
 	type args struct {
 		i int
 		j int
 	}
 	tests := []struct {
 		name string
-		h    prioritySlice[int]
+		h    minPrioritySlice[int]
 		args args
-		want int
+		want *PriorityItem[int]
 	}{
-		{"SimpleSlice", simplePrioritySlice(), args{0, 2}, 3},
+		{"SimpleSlice", simpleMinPrioritySlice(), args{0, 2}, &PriorityItem[int]{value: 2, priority: 3}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.h.Swap(tt.args.i, tt.args.j)
-			got := tt.h[0].value
-			if got != tt.want {
-				t.Errorf("prioritySlice.Swap() got = %v, want %v", got, tt.want)
+			if got := tt.h.First(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("minPrioritySlice.Swap() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_prioritySlice_Push(t *testing.T) {
+func Test_minPrioritySlice_Push(t *testing.T) {
 	type args struct {
 		x any
 	}
 	tests := []struct {
 		name string
-		h    prioritySlice[int]
+		h    minPrioritySlice[int]
 		args args
-		want int
+		want *PriorityItem[int]
 	}{
-		{"EmptySlice", emptyPrioritySlice(), args{simplePriorityItem()}, 0},
-		{"SimpleSlice", simplePrioritySlice(), args{simplePriorityItem()}, 1},
+		{"EmptySlice", emptyMinPrioritySlice(), args{simplePriorityItem()}, simplePriorityItem()},
+		{"SimpleSlice", simpleMinPrioritySlice(), args{simplePriorityItem()}, &PriorityItem[int]{value: 3, priority: 1}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.h.Push(tt.args.x)
-			if got := tt.h[0].value; got != tt.want {
-				t.Errorf("prioritySlice.Push() got = %v, want %v", got, tt.want)
+			if got := tt.h.First(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("minPrioritySlice.Push() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_prioritySlice_Pop(t *testing.T) {
+func Test_minPrioritySlice_Pop(t *testing.T) {
 	tests := []struct {
 		name string
-		h    prioritySlice[int]
+		h    minPrioritySlice[int]
 		want any
 	}{
-		{"SimpleSlice", simplePrioritySlice(), &priorityItem[int]{value: 3, priority: 1}},
+		{"SimpleSlice", simpleMinPrioritySlice(), &PriorityItem[int]{value: 2, priority: 3}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := tt.h.Pop(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("prioritySlice.Pop() = %v, want %v", got, tt.want)
+				t.Errorf("minPrioritySlice.Pop() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_minPrioritySlice_Less(t *testing.T) {
+	type args struct {
+		i int
+		j int
+	}
+	tests := []struct {
+		name string
+		h    minPrioritySlice[int]
+		args args
+		want bool
+	}{
+		{"LessPriority", simpleMinPrioritySlice(), args{0, 1}, true},
+		{"GreaterPriority", simpleMinPrioritySlice(), args{2, 1}, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.h.Less(tt.args.i, tt.args.j); got != tt.want {
+				t.Errorf("minPrioritySlice.Less() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_maxPrioritySlice_Less(t *testing.T) {
+	type args struct {
+		i int
+		j int
+	}
+	tests := []struct {
+		name string
+		h    maxPrioritySlice[int]
+		args args
+		want bool
+	}{
+		{"LessPriority", simpleMaxPrioritySlice(), args{2, 1}, false},
+		{"GreaterPriority", simpleMaxPrioritySlice(), args{0, 1}, true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.h.Less(tt.args.i, tt.args.j); got != tt.want {
+				t.Errorf("maxPrioritySlice.Less() = %v, want %v", got, tt.want)
 			}
 		})
 	}

@@ -5,11 +5,15 @@ import (
 	"github.com/qsoulior/alg/set"
 )
 
+// UnweightedGraph is graph without weights represented as adjacency map.
 type UnweightedGraph[T comparable] map[T][]T
 
-// Breadth-first search, O(n+m).
+// BFS represents breadth-first search with complexity O(n+m),
+// where n is number of vertices and m is number of edges.
+// BFS starts from vertex start and uses cmp to compare each vertex with target.
+// It returns found vertex or default value of type T and false as second value.
 func (g UnweightedGraph[T]) BFS(start T, cmp func(value T) bool) (T, bool) {
-	deque := queue.NewDeque[T]()
+	deque := queue.NewListDeque[T]()
 	enqueued := make(set.HashSet[T])
 
 	if _, ok := g[start]; ok {
@@ -35,9 +39,12 @@ func (g UnweightedGraph[T]) BFS(start T, cmp func(value T) bool) (T, bool) {
 	return value, false
 }
 
-// Depth-first search, O(n+m).
+// DFS represents depth-first search with complexity O(n+m),
+// where n is number of vertices and m is number of edges.
+// DFS starts from vertex start and uses cmp to compare each vertex with target.
+// It returns found vertex or default value of type T and false as second value.
 func (g UnweightedGraph[T]) DFS(start T, cmp func(value T) bool) (T, bool) {
-	deque := queue.NewDeque[T]()
+	deque := queue.NewListDeque[T]()
 	enqueued := make(set.HashSet[T])
 
 	if _, ok := g[start]; ok {

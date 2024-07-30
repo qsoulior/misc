@@ -7,10 +7,10 @@ import (
 	"github.com/qsoulior/alg/list"
 )
 
-func emptyQueue() Queue[int] { return NewQueue[int]() }
+func emptyQueue() Queue[int] { return NewListQueue[int]() }
 
 func simpleQueue() Queue[int] {
-	q := NewQueue[int]()
+	q := NewListQueue[int]()
 	q.PushBack(1)
 	return q
 }
@@ -46,11 +46,11 @@ func TestNewQueue(t *testing.T) {
 		name string
 		want Queue[int]
 	}{
-		{"EmptyQueue", &queue[int]{new(list.CircularLinkedList[int])}},
+		{"EmptyQueue", &listQueue[int]{new(list.CircularLinkedList[int])}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewQueue[int](); !reflect.DeepEqual(got, tt.want) {
+			if got := NewListQueue[int](); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewQueue() = %v, want %v", got, tt.want)
 			}
 		})

@@ -2,7 +2,7 @@ package queue
 
 import "github.com/qsoulior/alg/list"
 
-// nodeValue retrieves value from list node.
+// nodeValue retrieves value from list node and returns it.
 // If node is nil, returns default value of type T and false as second value.
 func nodeValue[T any](node *list.Node[T]) (T, bool) {
 	if node != nil {
@@ -13,28 +13,51 @@ func nodeValue[T any](node *list.Node[T]) (T, bool) {
 	return value, false
 }
 
-// Queue interface.
+// Queue represents abstract queue.
 type Queue[T any] interface {
+	// Len returns number of elements contained in queue.
 	Len() int
+
+	// Front returns first element of queue.
+	// If queue is empty, it returns default value of type T and false as second value.
 	Front() (T, bool)
+
+	// Back returns last element of queue.
+	// If queue is empty, it returns default value of type T and false as second value.
 	Back() (T, bool)
+
+	// PopFront removes first element from queue and returns it.
+	// If queue is empty, it returns default value of type T and false as second value.
 	PopFront() (T, bool)
+
+	// PushBack inserts new value at back of queue.
+	// It returns the inserted value.
 	PushBack(value T) T
 }
 
-// Queue based on linked list.
-type queue[T any] struct {
+// listQueue implements queue based on linked list.
+type listQueue[T any] struct {
 	data list.List[T]
 }
 
-func NewQueue[T any]() Queue[T] { return &queue[T]{new(list.CircularLinkedList[T])} }
+// NewListQueue returns new queue based on linked list.
+func NewListQueue[T any]() Queue[T] { return &listQueue[T]{new(list.CircularLinkedList[T])} }
 
-func (q queue[T]) Len() int { return q.data.Len() }
+// Len returns number of elements contained in queue, O(1).
+func (q listQueue[T]) Len() int { return q.data.Len() }
 
-func (q queue[T]) Front() (T, bool) { return nodeValue(q.data.Front()) }
+// Front returns first element of queue, O(1).
+// If queue is empty, it returns default value of type T and false as second value.
+func (q listQueue[T]) Front() (T, bool) { return nodeValue(q.data.Front()) }
 
-func (q queue[T]) Back() (T, bool) { return nodeValue(q.data.Back()) }
+// Back returns last element of queue, O(1).
+// If queue is empty, it returns default value of type T and false as second value.
+func (q listQueue[T]) Back() (T, bool) { return nodeValue(q.data.Back()) }
 
-func (q *queue[T]) PopFront() (T, bool) { return nodeValue(q.data.PopFront()) }
+// PopFront removes first element from queue and returns it, O(1).
+// If queue is empty, it returns default value of type T and false as second value.
+func (q *listQueue[T]) PopFront() (T, bool) { return nodeValue(q.data.PopFront()) }
 
-func (q *queue[T]) PushBack(value T) T { return q.data.PushBack(value).Value }
+// PushBack inserts new value at back of queue, O(1).
+// It returns the inserted value.
+func (q *listQueue[T]) PushBack(value T) T { return q.data.PushBack(value).Value }

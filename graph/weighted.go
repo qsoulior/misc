@@ -5,8 +5,10 @@ import (
 	"github.com/qsoulior/alg/set"
 )
 
+// WeightedGraph is graph with weights represented as adjacency map.
 type WeightedGraph[T comparable] map[T]map[T]int
 
+// Unweighted creates unweighted graph from g and returns int.
 func (g WeightedGraph[T]) Unweighted() UnweightedGraph[T] {
 	graph := make(UnweightedGraph[T], len(g))
 	for value, adjacents := range g {
@@ -19,7 +21,9 @@ func (g WeightedGraph[T]) Unweighted() UnweightedGraph[T] {
 	return graph
 }
 
-// Dijkstra's algorithm, O(n^2).
+// Dijkstra represents Dijkstra's algorithm with complexity O(n^2),
+// where n is number of vertices.
+// Algorithm starts from vertex start and returns distance map and parent map.
 func (g WeightedGraph[T]) Dijkstra(start T) (map[T]int, map[T]T) {
 	if _, ok := g[start]; !ok {
 		return nil, nil
@@ -56,7 +60,9 @@ func (g WeightedGraph[T]) Dijkstra(start T) (map[T]int, map[T]T) {
 	return dists, parents
 }
 
-// Dijkstra's algorithm, O(m*log(m)).
+// QuickDijkstra represents Dijkstra's algorithm with complexity O(m*log(m)),
+// where m is number of edges.
+// Algorithm starts from vertex start and returns distance map and parent map.
 func (g WeightedGraph[T]) QuickDijkstra(start T) (map[T]int, map[T]T) {
 	if _, ok := g[start]; !ok {
 		return nil, nil
@@ -65,15 +71,13 @@ func (g WeightedGraph[T]) QuickDijkstra(start T) (map[T]int, map[T]T) {
 	dists := map[T]int{start: 0}
 	parents := make(map[T]T)
 
-	// Since PopFront returns value with maximum priority,
-	// distances are stored as negative priorities.
-	queue := queue.NewPriorityQueue[T]()
+	// Minimum distance has the highest priority.
+	queue := queue.NewMinPriorityQueue[T]()
 	queue.Push(start, 0)
 
 	for queue.Len() > 0 {
+		// PopFront returns node with minimum distance, O(log(m)).
 		minNode, minDist, _ := queue.PopFront()
-
-		minDist = -minDist // minimum distance is maximum negative priority
 		if minDist > dists[minNode] {
 			continue
 		}
@@ -84,7 +88,7 @@ func (g WeightedGraph[T]) QuickDijkstra(start T) (map[T]int, map[T]T) {
 			if dist, ok := dists[neighbor]; !ok || newDist < dist {
 				dists[neighbor] = newDist
 				parents[neighbor] = minNode
-				queue.Push(neighbor, -newDist) // save distance as negative priority
+				queue.Push(neighbor, newDist)
 			}
 		}
 	}

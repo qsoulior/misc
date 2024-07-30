@@ -5,10 +5,10 @@ import (
 	"testing"
 )
 
-func emptyDeque() Deque[int] { return NewDeque[int]() }
+func emptyDeque() Deque[int] { return NewListDeque[int]() }
 
 func simpleDeque() Deque[int] {
-	d := NewDeque[int]()
+	d := NewListDeque[int]()
 	d.PushBack(1)
 	return d
 }
@@ -22,7 +22,7 @@ func TestNewDeque(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewDeque[int](); !reflect.DeepEqual(got, tt.want) {
+			if got := NewListDeque[int](); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewDeque() = %v, want %v", got, tt.want)
 			}
 		})
