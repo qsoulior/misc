@@ -1,6 +1,6 @@
 package list
 
-// Узел связного списка.
+// Node implements a linked list node.
 type Node[T any] struct {
 	prev  *Node[T]
 	next  *Node[T]
@@ -8,20 +8,20 @@ type Node[T any] struct {
 	Value T
 }
 
-// Получение предыдущего узла списка, работающее за O(1).
+// Prev returns previous node of list, O(1).
 func (n *Node[T]) Prev() *Node[T] {
-	// Если узел не принадлежит списку или циклично ссылается на последний узел,
-	// возвращаем nil.
+	// If node does not belong to list or links to the last node,
+	// return nil.
 	if n.list == nil || n.prev == n.list.Back() {
 		return nil
 	}
 	return n.prev
 }
 
-// Получение следующего узла списка, работающее за O(1).
+// Next returns next node of list, O(1).
 func (n *Node[T]) Next() *Node[T] {
-	// Если узел не принадлежит списку или циклично ссылается на первый узел,
-	// возвращаем nil.
+	// If node does not belong to list or links to the first node,
+	// return nil.
 	if n.list == nil || n.next == n.list.Front() {
 		return nil
 	}

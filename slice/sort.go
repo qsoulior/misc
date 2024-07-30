@@ -2,50 +2,55 @@ package slice
 
 import "math/rand"
 
-// Сортировка выбором, работающая за O(n^2)
-func SelectionSort[S ~[]E, E any](arr S, cmp func(E, E) int) {
-	n := len(arr) // длина массива
+// SelectionSort sorts slice s in order as determined by cmp function.
+// It uses selection sort algorithm with complexity O(n^2).
+// cmp should return 0 if a is equal b, a negative number if a precedes b,
+// or a positive number if a follows b.
+func SelectionSort[S ~[]E, E any](s S, cmp func(a E, b E) int) {
+	n := len(s)
 	for i := 0; i < n; i++ {
-		// Ищем индекс наименьшего элемента в неотсортированной части массива.
+		// Search for index of the smallest element in unsorted part of slice.
 		min := i
 		for j := i + 1; j < n; j++ {
-			if cmp(arr[j], arr[min]) < 0 {
+			if cmp(s[j], s[min]) < 0 {
 				min = j
 			}
 		}
 
-		// Меняем местами текущий элемент и наименьший элемент неотсортированной части.
-		arr[i], arr[min] = arr[min], arr[i]
+		// Swap current element and the smallest element of unsorted part.
+		s[i], s[min] = s[min], s[i]
 	}
 }
 
-// Рекурсивная быстрая сортировка, работающая за O(n*log(n))
-func QuickSort[S ~[]E, E any](arr S, cmp func(E, E) int) {
-	n := len(arr) // длина массива
+// QuickSort sorts slice s in order as determined by cmp function.
+// It uses recursive quick sort algorithm with complexity O(n*log(n)).
+// cmp should return 0 if a is equal b, a negative number if a precedes b,
+// or a positive number if a follows b.
+func QuickSort[S ~[]E, E any](s S, cmp func(a E, b E) int) {
+	n := len(s)
 	if n < 2 {
-		// Если массив содержит 0 или 1 элемент, он отсортирован.
+		// If slice contains 0 or 1 element, it is sorted.
 		return
 	}
 
-	left, right := 0, n-1 // границы массива (индексы первого и последнего элементов)
-	pivot := rand.Intn(n) // индекс опорного элемента
+	left, right := 0, n-1 // slice boundaries (indexes of first and last elements)
+	pivot := rand.Intn(n) // index of pivot element
 
-	// Меняем местами опорный и последний элементы.
-	arr[pivot], arr[right] = arr[right], arr[pivot]
+	// Swap pivot and last elements.
+	s[pivot], s[right] = s[right], s[pivot]
 
 	for i := 0; i < right; i++ {
-		// Если элемент меньше опорного,
-		// отправляем его в начало после других отправленных в начало элементов.
-		if cmp(arr[i], arr[right]) < 0 {
-			arr[i], arr[left] = arr[left], arr[i]
+		// If element precedes pivot, then move it
+		// to the beginning after other moved elements.
+		if cmp(s[i], s[right]) < 0 {
+			s[i], s[left] = s[left], s[i]
 			left++
 		}
 	}
 
-	// Меняем местами опорный элемент и первый элемент,
-	// который больше или равен опорному.
-	arr[left], arr[right] = arr[right], arr[left]
+	// Swap pivot element and element following last moved element.
+	s[left], s[right] = s[right], s[left]
 
-	QuickSort(arr[:left], cmp)
-	QuickSort(arr[left+1:], cmp)
+	QuickSort(s[:left], cmp)
+	QuickSort(s[left+1:], cmp)
 }
