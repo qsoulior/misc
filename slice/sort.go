@@ -1,3 +1,6 @@
+// Package slice implements various operations with slices.
+// It provides sort and search algorithms.
+
 package slice
 
 import "math/rand"

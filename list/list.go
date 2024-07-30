@@ -1,37 +1,30 @@
+// Package list implements list data structures.
+// It provides doubly linked list and circular doubly linked list implementations.
 package list
 
 // List represents abstract list.
 type List[T any] interface {
 	// Len returns number of nodes contained in list.
 	Len() int
-
 	// Front returns first node of list or nil if list is empty.
 	Front() *Node[T]
-
 	// Back returns last node of list or nil if list is empty.
 	Back() *Node[T]
-
 	// Pop removes specified node from list and returns it.
 	Pop(node *Node[T]) *Node[T]
-
 	// PopFront removes first node from list and returns it.
 	PopFront() *Node[T]
-
 	// PopBack removes last node from list and returns it.
 	PopBack() *Node[T]
-
 	// InsertBefore inserts new node with value
 	// before specified node and returns it.
 	InsertBefore(value T, at *Node[T]) *Node[T]
-
 	// InsertAfter inserts new node with value
 	// after specified node and returns it.
 	InsertAfter(value T, at *Node[T]) *Node[T]
-
 	// PushFront inserts new node with value
 	// at front of list and returns it.
 	PushFront(value T) *Node[T]
-
 	// PushBack inserts new node with value
 	// at back of list and returns it.
 	PushBack(value T) *Node[T]

@@ -6,15 +6,12 @@ import "container/heap"
 type PriorityQueue[T any] interface {
 	// Len returns number of elements contained in queue.
 	Len() int
-
 	// Front returns the highest-priority element and its priority.
 	// If queue is empty, it returns default value of type T and false as third value.
 	Front() (T, int, bool)
-
 	// PopFront removes the highest-priority element, returns it and its priority.
 	// If queue is empty, it returns default value of type T and false as third value.
 	PopFront() (T, int, bool)
-
 	// Push inserts new value with priority into queue.
 	// It returns the inserted value and its priority.
 	Push(value T, priority int) (T, int)
@@ -86,7 +83,6 @@ type PriorityItem[T any] struct {
 // It includes heap.Interface to use container/heap operations.
 type prioritySlice[T any] interface {
 	heap.Interface
-
 	// First returns first item of priority slice.
 	First() *PriorityItem[T]
 }

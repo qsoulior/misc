@@ -1,6 +1,8 @@
+// Package queue implements queue data structures.
+// It provides queue, deque, and priority queue implementations.
 package queue
 
-import "github.com/qsoulior/alg/list"
+import "github.com/qsoulior/misc/list"
 
 // nodeValue retrieves value from list node and returns it.
 // If node is nil, returns default value of type T and false as second value.
@@ -17,19 +19,15 @@ func nodeValue[T any](node *list.Node[T]) (T, bool) {
 type Queue[T any] interface {
 	// Len returns number of elements contained in queue.
 	Len() int
-
 	// Front returns first element of queue.
 	// If queue is empty, it returns default value of type T and false as second value.
 	Front() (T, bool)
-
 	// Back returns last element of queue.
 	// If queue is empty, it returns default value of type T and false as second value.
 	Back() (T, bool)
-
 	// PopFront removes first element from queue and returns it.
 	// If queue is empty, it returns default value of type T and false as second value.
 	PopFront() (T, bool)
-
 	// PushBack inserts new value at back of queue.
 	// It returns the inserted value.
 	PushBack(value T) T

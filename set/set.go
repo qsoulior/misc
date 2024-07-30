@@ -1,3 +1,5 @@
+// Package set implements set data structures.
+// It provides hash set implementation with core operations.
 package set
 
 // HashSet implements set based on hash table of empty structs.

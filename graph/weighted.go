@@ -1,8 +1,8 @@
 package graph
 
 import (
-	"github.com/qsoulior/alg/queue"
-	"github.com/qsoulior/alg/set"
+	"github.com/qsoulior/misc/queue"
+	"github.com/qsoulior/misc/set"
 )
 
 // WeightedGraph is graph with weights represented as adjacency map.

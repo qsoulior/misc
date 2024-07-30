@@ -1,15 +1,13 @@
 package queue
 
-import "github.com/qsoulior/alg/list"
+import "github.com/qsoulior/misc/list"
 
 // Deque represents abstract double-ended queue.
 type Deque[T any] interface {
 	Queue[T]
-
 	// PopBack removes last element from queue and returns it.
 	// If queue is empty, it returns default value of type T and false as second value.
 	PopBack() (T, bool)
-
 	// PushFront inserts new value at front of queue.
 	// It returns the inserted value.
 	PushFront(value T) T

@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/qsoulior/alg/list"
+	"github.com/qsoulior/misc/list"
 )
 
 func emptyQueue() Queue[int] { return NewListQueue[int]() }
