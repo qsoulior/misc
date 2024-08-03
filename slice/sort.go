@@ -104,6 +104,27 @@ func SelectionSort[S ~[]E, E any](s S, cmp func(a E, b E) int) {
 	}
 }
 
+// InsertionSort sorts slice s in order as determined by cmp function.
+// It uses insertion sort algorithm with complexity O(n^2).
+// cmp should return 0 if a is equal b, a negative number if a precedes b,
+// or a positive number if a follows b.
+func InsertionSort[S ~[]E, E any](s S, cmp func(a E, b E) int) {
+	for i := 1; i < len(s); i++ {
+		e := s[i] // current element
+
+		// Search for index of current element in sorted part of slice
+		// and shift larger values to the right of it.
+		j := i
+		for j > 0 && cmp(s[j-1], e) > 0 {
+			s[j] = s[j-1]
+			j--
+		}
+
+		// Insert current element into the found position.
+		s[j] = e
+	}
+}
+
 // QuickSort sorts slice s in order as determined by cmp function.
 // It uses recursive quick sort algorithm with complexity O(n*log(n)).
 // cmp should return 0 if a is equal b, a negative number if a precedes b,

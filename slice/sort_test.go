@@ -12,7 +12,7 @@ type SortFunc func(x []int, cmp func(a, b int) int)
 func cmp(a, b int) int { return a - b }
 
 // Tests
-func TestBubbleSort(t *testing.T) {
+func testSort(t *testing.T, fn SortFunc) {
 	type args struct {
 		arr []int
 	}
@@ -28,108 +28,36 @@ func TestBubbleSort(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := tt.args.arr
-			BubbleSort(got, cmp)
+			fn(got, cmp)
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("BubbleSort() = %v, want %v", got, tt.want)
+				t.Errorf("got %v, want %v", got, tt.want)
 			}
 		})
 	}
+}
+
+func TestBubbleSort(t *testing.T) {
+	testSort(t, BubbleSort)
 }
 
 func TestCocktailSort(t *testing.T) {
-	type args struct {
-		arr []int
-	}
-	tests := []struct {
-		name string
-		args args
-		want []int
-	}{
-		{"NilSlice", args{nil}, nil},
-		{"EmptySlice", args{[]int{}}, []int{}},
-		{"UnsortedSlice", args{[]int{6, 2, 3, 9, 1, 4, 1}}, []int{1, 1, 2, 3, 4, 6, 9}},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := tt.args.arr
-			CocktailSort(got, cmp)
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("CocktailSort() = %v, want %v", got, tt.want)
-			}
-		})
-	}
+	testSort(t, CocktailSort)
 }
 
 func TestCombSort(t *testing.T) {
-	type args struct {
-		arr []int
-	}
-	tests := []struct {
-		name string
-		args args
-		want []int
-	}{
-		{"NilSlice", args{nil}, nil},
-		{"EmptySlice", args{[]int{}}, []int{}},
-		{"UnsortedSlice", args{[]int{6, 2, 3, 9, 1, 4, 1}}, []int{1, 1, 2, 3, 4, 6, 9}},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := tt.args.arr
-			CombSort(got, cmp)
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("CombSort() = %v, want %v", got, tt.want)
-			}
-		})
-	}
+	testSort(t, CombSort)
 }
 
 func TestSelectionSort(t *testing.T) {
-	type args struct {
-		arr []int
-	}
-	tests := []struct {
-		name string
-		args args
-		want []int
-	}{
-		{"NilSlice", args{nil}, nil},
-		{"EmptySlice", args{[]int{}}, []int{}},
-		{"UnsortedSlice", args{[]int{6, 2, 3, 9, 1, 4, 1}}, []int{1, 1, 2, 3, 4, 6, 9}},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := tt.args.arr
-			SelectionSort(got, cmp)
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("SelectionSort() = %v, want %v", got, tt.want)
-			}
-		})
-	}
+	testSort(t, SelectionSort)
+}
+
+func TestInsertionSort(t *testing.T) {
+	testSort(t, InsertionSort)
 }
 
 func TestQuickSort(t *testing.T) {
-	type args struct {
-		arr []int
-	}
-	tests := []struct {
-		name string
-		args args
-		want []int
-	}{
-		{"NilSlice", args{nil}, nil},
-		{"EmptySlice", args{[]int{}}, []int{}},
-		{"UnsortedSlice", args{[]int{6, 2, 3, 9, 1, 4, 1}}, []int{1, 1, 2, 3, 4, 6, 9}},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := tt.args.arr
-			QuickSort(got, cmp)
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("QuickSort() = %v, want %v", got, tt.want)
-			}
-		})
-	}
+	testSort(t, QuickSort)
 }
 
 // Benchmarks
@@ -171,6 +99,10 @@ func BenchmarkCombSort(b *testing.B) {
 
 func BenchmarkSelectionSort(b *testing.B) {
 	benchmarkSort(b, SelectionSort)
+}
+
+func BenchmarkInsertionSort(b *testing.B) {
+	benchmarkSort(b, InsertionSort)
 }
 
 func BenchmarkQuickSort(b *testing.B) {
