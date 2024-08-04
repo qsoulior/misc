@@ -23,7 +23,7 @@ func testSort(t *testing.T, fn SortFunc) {
 	}{
 		{"NilSlice", args{nil}, nil},
 		{"EmptySlice", args{[]int{}}, []int{}},
-		{"UnsortedSlice", args{[]int{6, 2, 3, 9, 1, 4, 1}}, []int{1, 1, 2, 3, 4, 6, 9}},
+		{"UnsortedSlice", args{[]int{6, 2, 3, 9, 1, 4, 1, 10, 5, 3, 7, 8, 1}}, []int{1, 1, 1, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

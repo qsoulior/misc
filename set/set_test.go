@@ -5,6 +5,32 @@ import (
 	"testing"
 )
 
+func emptySet() HashSet[int] { return make(HashSet[int]) }
+
+func simpleSetA() HashSet[int] { return HashSet[int]{1: struct{}{}} }
+
+func simpleSetB() HashSet[int] { return HashSet[int]{0: struct{}{}, 2: struct{}{}} }
+
+func simpleSetC() HashSet[int] { return HashSet[int]{0: struct{}{}, 1: struct{}{}} }
+
+func TestHashSet_Len(t *testing.T) {
+	tests := []struct {
+		name string
+		s    HashSet[int]
+		want int
+	}{
+		{"EmptySet", emptySet(), 0},
+		{"SimpleSet", simpleSetB(), 2},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.s.Len(); got != tt.want {
+				t.Errorf("HashSet.Len() = %v, want %v", false, true)
+			}
+		})
+	}
+}
+
 func TestHashSet_Add(t *testing.T) {
 	type args struct {
 		value int
@@ -14,14 +40,14 @@ func TestHashSet_Add(t *testing.T) {
 		s    HashSet[int]
 		args args
 	}{
-		{"EmptySet", make(HashSet[int]), args{0}},
-		{"Set", HashSet[int]{0: struct{}{}}, args{1}},
+		{"EmptySet", emptySet(), args{0}},
+		{"SimpleSet", simpleSetB(), args{1}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.s.Add(tt.args.value)
 			if !tt.s.Contains(tt.args.value) {
-				t.Errorf("HashSet.Contains() = %v, want %v", false, true)
+				t.Errorf("set does not contain %v after HashSet.Add()", tt.args.value)
 			}
 		})
 	}
@@ -36,14 +62,14 @@ func TestHashSet_Remove(t *testing.T) {
 		s    HashSet[int]
 		args args
 	}{
-		{"EmptySet", make(HashSet[int]), args{0}},
-		{"Set", HashSet[int]{1: struct{}{}}, args{1}},
+		{"EmptySet", emptySet(), args{0}},
+		{"SimpleSet", simpleSetB(), args{2}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.s.Remove(tt.args.value)
 			if tt.s.Contains(tt.args.value) {
-				t.Errorf("HashSet.Contains() = %v, want %v", true, false)
+				t.Errorf("set contains %v after HashSet.Remove()", tt.args.value)
 			}
 		})
 	}
@@ -59,8 +85,8 @@ func TestHashSet_Contains(t *testing.T) {
 		args args
 		want bool
 	}{
-		{"EmptySet", make(HashSet[int]), args{0}, false},
-		{"Set", HashSet[int]{1: struct{}{}}, args{1}, true},
+		{"EmptySet", emptySet(), args{0}, false},
+		{"Set", simpleSetB(), args{2}, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -72,10 +98,7 @@ func TestHashSet_Contains(t *testing.T) {
 }
 
 func TestHashSet_Union(t *testing.T) {
-	smallerSet := HashSet[int]{0: struct{}{}}
-	largerSet := HashSet[int]{0: struct{}{}, 1: struct{}{}}
-	unionSet := HashSet[int]{0: struct{}{}, 1: struct{}{}}
-
+	unionSet := HashSet[int]{0: struct{}{}, 1: struct{}{}, 2: struct{}{}}
 	type args struct {
 		set HashSet[int]
 	}
@@ -85,8 +108,8 @@ func TestHashSet_Union(t *testing.T) {
 		args args
 		want HashSet[int]
 	}{
-		{"LargerSet", largerSet, args{smallerSet}, unionSet},
-		{"SmallerSet", smallerSet, args{largerSet}, unionSet},
+		{"LargerSet", simpleSetB(), args{simpleSetA()}, unionSet},
+		{"SmallerSet", simpleSetA(), args{simpleSetB()}, unionSet},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -98,10 +121,6 @@ func TestHashSet_Union(t *testing.T) {
 }
 
 func TestHashSet_Intersection(t *testing.T) {
-	smallerSet := HashSet[int]{0: struct{}{}}
-	largerSet := HashSet[int]{0: struct{}{}, 1: struct{}{}}
-	intersectSet := HashSet[int]{0: struct{}{}}
-
 	type args struct {
 		set HashSet[int]
 	}
@@ -111,8 +130,8 @@ func TestHashSet_Intersection(t *testing.T) {
 		args args
 		want HashSet[int]
 	}{
-		{"LargerSet", largerSet, args{smallerSet}, intersectSet},
-		{"SmallerSet", smallerSet, args{largerSet}, intersectSet},
+		{"LargerSet", simpleSetC(), args{simpleSetA()}, simpleSetA()},
+		{"SmallerSet", simpleSetA(), args{simpleSetC()}, simpleSetA()},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -124,9 +143,6 @@ func TestHashSet_Intersection(t *testing.T) {
 }
 
 func TestHashSet_Difference(t *testing.T) {
-	smallerSet := HashSet[int]{0: struct{}{}}
-	largerSet := HashSet[int]{0: struct{}{}, 1: struct{}{}}
-
 	type args struct {
 		set HashSet[int]
 	}
@@ -136,8 +152,8 @@ func TestHashSet_Difference(t *testing.T) {
 		args args
 		want HashSet[int]
 	}{
-		{"LargerSet", largerSet, args{smallerSet}, HashSet[int]{1: struct{}{}}},
-		{"SmallerSet", smallerSet, args{largerSet}, make(HashSet[int])},
+		{"LargerSet", simpleSetB(), args{simpleSetC()}, HashSet[int]{2: struct{}{}}},
+		{"SmallerSet", simpleSetC(), args{simpleSetB()}, HashSet[int]{1: struct{}{}}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -158,8 +174,8 @@ func TestHashSet_SymmetricDifference(t *testing.T) {
 		args args
 		want HashSet[int]
 	}{
-		{"UnequalSets", HashSet[int]{0: struct{}{}, 1: struct{}{}}, args{HashSet[int]{1: struct{}{}, 2: struct{}{}}}, HashSet[int]{0: struct{}{}, 2: struct{}{}}},
-		{"EqualSets", HashSet[int]{0: struct{}{}, 1: struct{}{}}, args{HashSet[int]{0: struct{}{}, 1: struct{}{}}}, make(HashSet[int])},
+		{"UnequalSets", simpleSetB(), args{simpleSetC()}, HashSet[int]{1: struct{}{}, 2: struct{}{}}},
+		{"EqualSets", simpleSetB(), args{simpleSetB()}, emptySet()},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -171,8 +187,6 @@ func TestHashSet_SymmetricDifference(t *testing.T) {
 }
 
 func TestHashSet_Equal(t *testing.T) {
-	set := HashSet[int]{0: struct{}{}, 1: struct{}{}}
-
 	type args struct {
 		set HashSet[int]
 	}
@@ -182,9 +196,9 @@ func TestHashSet_Equal(t *testing.T) {
 		args args
 		want bool
 	}{
-		{"UnequalLengths", set, args{HashSet[int]{1: struct{}{}}}, false},
-		{"UnequalSets", set, args{HashSet[int]{1: struct{}{}, 2: struct{}{}}}, false},
-		{"EqualSets", set, args{HashSet[int]{1: struct{}{}, 0: struct{}{}}}, true},
+		{"UnequalLengths", simpleSetB(), args{HashSet[int]{2: struct{}{}}}, false},
+		{"UnequalSets", simpleSetB(), args{HashSet[int]{1: struct{}{}, 2: struct{}{}}}, false},
+		{"EqualSets", simpleSetB(), args{simpleSetB()}, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -196,8 +210,6 @@ func TestHashSet_Equal(t *testing.T) {
 }
 
 func TestHashSet_Subset(t *testing.T) {
-	set := HashSet[int]{0: struct{}{}, 1: struct{}{}}
-
 	type args struct {
 		set HashSet[int]
 	}
@@ -207,9 +219,9 @@ func TestHashSet_Subset(t *testing.T) {
 		args args
 		want bool
 	}{
-		{"LargerSet", HashSet[int]{0: struct{}{}, 1: struct{}{}, 2: struct{}{}}, args{set}, false},
-		{"NotSubset", HashSet[int]{2: struct{}{}}, args{set}, false},
-		{"Subset", HashSet[int]{0: struct{}{}}, args{set}, true},
+		{"LargerSet", simpleSetB(), args{simpleSetA()}, false},
+		{"NotSubset", simpleSetA(), args{simpleSetB()}, false},
+		{"Subset", HashSet[int]{0: struct{}{}}, args{simpleSetB()}, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -221,8 +233,6 @@ func TestHashSet_Subset(t *testing.T) {
 }
 
 func TestHashSet_Superset(t *testing.T) {
-	set := HashSet[int]{0: struct{}{}, 1: struct{}{}}
-
 	type args struct {
 		set HashSet[int]
 	}
@@ -232,9 +242,9 @@ func TestHashSet_Superset(t *testing.T) {
 		args args
 		want bool
 	}{
-		{"SmallerSet", HashSet[int]{0: struct{}{}}, args{set}, false},
-		{"NotSuperset", set, args{HashSet[int]{2: struct{}{}}}, false},
-		{"Superset", set, args{HashSet[int]{0: struct{}{}}}, true},
+		{"SmallerSet", simpleSetA(), args{simpleSetB()}, false},
+		{"NotSuperset", simpleSetB(), args{simpleSetA()}, false},
+		{"Superset", simpleSetB(), args{HashSet[int]{0: struct{}{}}}, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

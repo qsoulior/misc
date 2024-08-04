@@ -5,57 +5,59 @@ package set
 // HashSet implements set based on hash table of empty structs.
 type HashSet[T comparable] map[T]struct{}
 
-// Len returns number of elements contained in set.
+// Len returns number of elements contained in set, O(1).
 func (s HashSet[T]) Len() int { return len(s) }
 
-// Add inserts value into set.
+// Add inserts value into set, O(1).
 func (s HashSet[T]) Add(value T) { s[value] = struct{}{} }
 
-// Remove removes value from set.
+// Remove removes value from set, O(1).
 func (s HashSet[T]) Remove(value T) { delete(s, value) }
 
-// Contains returns true if value is contained in set.
+// Contains returns true if value is contained in set, O(1).
 func (s HashSet[T]) Contains(value T) bool {
 	_, ok := s[value]
 	return ok
 }
 
-// Union returns new set with all elements from sets.
-func (s HashSet[T]) Union(set HashSet[T]) HashSet[T] {
-	length, l := len(set), len(s)
-	if l > length {
-		length = l
+// Union returns new set with all elements from sets,
+// complexity is O(n+m) where n is length of s and m is length of t.
+func (s HashSet[T]) Union(t HashSet[T]) HashSet[T] {
+	lt, ls := len(t), len(s)
+	if ls > lt {
+		lt = ls
 	}
 
-	union := make(HashSet[T], length)
+	union := make(HashSet[T], lt)
 	for value := range s {
 		union.Add(value)
 	}
 
-	for value := range set {
+	for value := range t {
 		union.Add(value)
 	}
 
 	return union
 }
 
-// Intersection returns new set with elements common to sets.
-func (s HashSet[T]) Intersection(set HashSet[T]) HashSet[T] {
-	length, l := len(set), len(s)
-	if l < length {
-		length = l
+// Intersection returns new set with elements common to sets,
+// complexity is O(n) where n is length of smaller set.
+func (s HashSet[T]) Intersection(t HashSet[T]) HashSet[T] {
+	lt, ls := len(t), len(s)
+	if ls < lt {
+		lt = ls
 	}
 
-	intersection := make(HashSet[T], length)
+	intersection := make(HashSet[T], lt)
 
-	if l == length {
+	if ls == lt {
 		for value := range s {
-			if set.Contains(value) {
+			if t.Contains(value) {
 				intersection.Add(value)
 			}
 		}
 	} else {
-		for value := range set {
+		for value := range t {
 			if s.Contains(value) {
 				intersection.Add(value)
 			}
@@ -65,12 +67,13 @@ func (s HashSet[T]) Intersection(set HashSet[T]) HashSet[T] {
 	return intersection
 }
 
-// Difference returns new set with elements from s that are not in set.
-func (s HashSet[T]) Difference(set HashSet[T]) HashSet[T] {
+// Difference returns new set with elements from s that are not in t,
+// complexity is O(n) where n is length of s.
+func (s HashSet[T]) Difference(t HashSet[T]) HashSet[T] {
 	diff := make(HashSet[T])
 
 	for value := range s {
-		if !set.Contains(value) {
+		if !t.Contains(value) {
 			diff.Add(value)
 		}
 	}
@@ -78,11 +81,12 @@ func (s HashSet[T]) Difference(set HashSet[T]) HashSet[T] {
 	return diff
 }
 
-// SymmetricDifference returns new set with elements in either s or set but not both.
-func (s HashSet[T]) SymmetricDifference(set HashSet[T]) HashSet[T] {
-	diff := s.Difference(set)
+// SymmetricDifference returns new set with elements in either s or t but not both,
+// complexity is O(n) where n is length of s.
+func (s HashSet[T]) SymmetricDifference(t HashSet[T]) HashSet[T] {
+	diff := s.Difference(t)
 
-	for value := range set {
+	for value := range t {
 		if !s.Contains(value) {
 			diff.Add(value)
 		}
@@ -91,15 +95,15 @@ func (s HashSet[T]) SymmetricDifference(set HashSet[T]) HashSet[T] {
 	return diff
 }
 
-// Equal returns true if s contains every element of set
-// and their lengths are equal.
-func (s HashSet[T]) Equal(set HashSet[T]) bool {
-	if len(s) != len(set) {
+// Equal returns true if s contains every element of t and their lengths are equal,
+// complexity is O(n), where n is length of s.
+func (s HashSet[T]) Equal(t HashSet[T]) bool {
+	if len(s) != len(t) {
 		return false
 	}
 
 	for value := range s {
-		if !set.Contains(value) {
+		if !t.Contains(value) {
 			return false
 		}
 	}
@@ -107,14 +111,15 @@ func (s HashSet[T]) Equal(set HashSet[T]) bool {
 	return true
 }
 
-// Subset returns true if set contains every element of s.
-func (s HashSet[T]) Subset(set HashSet[T]) bool {
-	if len(s) > len(set) {
+// Subset returns true if t contains every element of s,
+// complexity is O(n) where n is length of s.
+func (s HashSet[T]) Subset(t HashSet[T]) bool {
+	if len(s) > len(t) {
 		return false
 	}
 
 	for value := range s {
-		if !set.Contains(value) {
+		if !t.Contains(value) {
 			return false
 		}
 	}
@@ -122,5 +127,6 @@ func (s HashSet[T]) Subset(set HashSet[T]) bool {
 	return true
 }
 
-// Superset returns true if s contains every element of set.
-func (s HashSet[T]) Superset(set HashSet[T]) bool { return set.Subset(s) }
+// Superset returns true if s contains every element of set,
+// complexity is O(n) where n is length of t.
+func (s HashSet[T]) Superset(t HashSet[T]) bool { return t.Subset(s) }
