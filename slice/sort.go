@@ -130,7 +130,7 @@ func InsertionSort[S ~[]E, E any](s S, cmp func(a E, b E) int) {
 // cmp should return 0 if a is equal b, a negative number if a precedes b,
 // or a positive number if a follows b.
 func QuickSort[S ~[]E, E any](s S, cmp func(a E, b E) int) {
-	// If slice contains 0 or 1 element, it is sorted.
+	// If slice contains 0 or 1 elements, it is sorted.
 	for n := len(s); n >= 2; n = len(s) {
 		left, right := 0, n-1 // slice boundaries (indexes of first and last elements)
 		pivot := rand.Intn(n) // index of pivot element
@@ -159,4 +159,40 @@ func QuickSort[S ~[]E, E any](s S, cmp func(a E, b E) int) {
 			s = s[:left]
 		}
 	}
+}
+
+// MergeSort sorts slice s in order as determined by cmp function.
+// It uses recursive merge sort algorithm with complexity O(n*log(n)).
+// cmp should return 0 if a is equal b, a negative number if a precedes b,
+// or a positive number if a follows b.
+func MergeSort[S ~[]E, E any](s S, cmp func(a E, b E) int) {
+	n := len(s)
+	// If slice contains 0 or 1 elements, it is sorted.
+	if n < 2 {
+		return
+	}
+
+	m := n / 2
+	MergeSort(s[:m], cmp) // sort left subslice
+	MergeSort(s[m:], cmp) // sort right subslice
+
+	buf := make(S, n)
+	k := 0 // index of buffer element
+	i := 0 // index of element in left subslice
+	j := m // index of element in right subslice
+
+	// Merge two subslices into one buffer.
+	for i < m || j < n {
+		if j >= n || (i < m && cmp(s[i], s[j]) < 0) {
+			buf[k] = s[i]
+			i++
+		} else {
+			buf[k] = s[j]
+			j++
+		}
+		k++
+	}
+
+	// Copy elements from buffer to result slice.
+	copy(s, buf)
 }

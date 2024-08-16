@@ -7,11 +7,10 @@ import (
 	"testing"
 )
 
-type SortFunc func(x []int, cmp func(a, b int) int)
+type SortFunc func(s []int, cmp func(a, b int) int)
 
 func cmp(a, b int) int { return a - b }
 
-// Tests
 func testSort(t *testing.T, fn SortFunc) {
 	type args struct {
 		arr []int
@@ -60,7 +59,10 @@ func TestQuickSort(t *testing.T) {
 	testSort(t, QuickSort)
 }
 
-// Benchmarks
+func TestMergeSort(t *testing.T) {
+	testSort(t, MergeSort)
+}
+
 func randomSlice(n, max int) []int {
 	s := make([]int, n)
 	for i := 0; i < n; i++ {
@@ -107,4 +109,57 @@ func BenchmarkInsertionSort(b *testing.B) {
 
 func BenchmarkQuickSort(b *testing.B) {
 	benchmarkSort(b, QuickSort)
+}
+
+func BenchmarkMergeSort(b *testing.B) {
+	benchmarkSort(b, MergeSort)
+}
+
+func fuzzSort(f *testing.F, fn SortFunc) {
+	for range 100 {
+		s := randomSlice(1000, 1000)
+		b := make([]byte, len(s))
+		for i := range s {
+			b[i] = byte(s[i])
+		}
+		f.Add(b)
+	}
+	f.Fuzz(func(t *testing.T, b []byte) {
+		s := make([]int, len(b))
+		for i := range s {
+			s[i] = (int(b[i]) * rand.Intn(256)) % 1000
+		}
+		fn(s, cmp)
+		if !slices.IsSortedFunc(s, cmp) {
+			t.Error("s is not sorted")
+		}
+	})
+}
+
+func FuzzBubbleSort(f *testing.F) {
+	fuzzSort(f, BubbleSort)
+}
+
+func FuzzCocktailSort(f *testing.F) {
+	fuzzSort(f, CocktailSort)
+}
+
+func FuzzCombSort(f *testing.F) {
+	fuzzSort(f, CombSort)
+}
+
+func FuzzSelectionSort(f *testing.F) {
+	fuzzSort(f, SelectionSort)
+}
+
+func FuzzInsertionSort(f *testing.F) {
+	fuzzSort(f, InsertionSort)
+}
+
+func FuzzQuickSort(f *testing.F) {
+	fuzzSort(f, QuickSort)
+}
+
+func FuzzMergeSort(f *testing.F) {
+	fuzzSort(f, MergeSort)
 }
