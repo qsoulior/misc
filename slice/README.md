@@ -1,3 +1,15 @@
+## Search algorithms
+
+### Benchmarks
+```
+go test -bench Search -benchmem -cpu 4
+
+BenchmarkLinearSearch-4             1810            685498 ns/op               0 B/op          0 allocs/op
+BenchmarkBinarySearch-4         276558870                4.212 ns/op           0 B/op          0 allocs/op
+BenchmarkJumpSearch-4            1476360               816.8 ns/op             0 B/op          0 allocs/op
+```
+
+
 ## Sorting algorithms
 
 ### Comparison table
@@ -14,7 +26,7 @@
 
 ### Benchmarks
 ```
-go test -bench . -benchmem -cpu 4
+go test -bench Sort -benchmem -cpu 4
 
 BenchmarkSort-4                     2496            486425 ns/op               0 B/op          0 allocs/op
 BenchmarkBubbleSort-4                 12          99857042 ns/op               0 B/op          0 allocs/op

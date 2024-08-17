@@ -13,7 +13,7 @@ func cmp(a, b int) int { return a - b }
 
 func testSort(t *testing.T, fn SortFunc) {
 	type args struct {
-		arr []int
+		s []int
 	}
 	tests := []struct {
 		name string
@@ -26,7 +26,7 @@ func testSort(t *testing.T, fn SortFunc) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := tt.args.arr
+			got := tt.args.s
 			fn(got, cmp)
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("got %v, want %v", got, tt.want)
@@ -77,12 +77,14 @@ func randomSlice(n, max int) []int {
 }
 
 func benchmarkSort(b *testing.B, fn SortFunc) {
-	ns := make([][]int, b.N)
-	for i := 0; i < b.N; i++ {
-		ns[i] = randomSlice(10000, 1000)
-	}
+	const n = 1e4
+	rs := randomSlice(n, 1e3)
 	b.ResetTimer()
-	for _, s := range ns {
+	for i := 0; i < b.N; i++ {
+		b.StopTimer()
+		s := make([]int, len(rs))
+		copy(s, rs)
+		b.StartTimer()
 		fn(s, cmp)
 	}
 }
