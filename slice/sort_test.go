@@ -63,6 +63,10 @@ func TestMergeSort(t *testing.T) {
 	testSort(t, MergeSort)
 }
 
+func TestHeapSort(t *testing.T) {
+	testSort(t, HeapSort)
+}
+
 func randomSlice(n, max int) []int {
 	s := make([]int, n)
 	for i := 0; i < n; i++ {
@@ -115,6 +119,10 @@ func BenchmarkMergeSort(b *testing.B) {
 	benchmarkSort(b, MergeSort)
 }
 
+func BenchmarkHeapSort(b *testing.B) {
+	benchmarkSort(b, HeapSort)
+}
+
 func fuzzSort(f *testing.F, fn SortFunc) {
 	for range 100 {
 		s := randomSlice(1000, 1000)
@@ -162,4 +170,8 @@ func FuzzQuickSort(f *testing.F) {
 
 func FuzzMergeSort(f *testing.F) {
 	fuzzSort(f, MergeSort)
+}
+
+func FuzzHeapSort(f *testing.F) {
+	fuzzSort(f, HeapSort)
 }

@@ -10,6 +10,7 @@
 | Insertion sort | $O(n)$        | $O(n^2)$      | $O(n^2)$      | $O(1)$                            | &check; |
 | Quick sort     | $O(n\log{n})$ | $O(n\log{n})$ | $O(n^2)$      | $O(\log{n})$<br>Sedgewick's trick | &cross; |
 | Merge sort     | $O(n\log{n})$ | $O(n\log{n})$ | $O(n\log{n})$ | $O(n)$                            | &check; |
+| Heap sort      | $O(n\log{n})$ | $O(n\log{n})$ | $O(n\log{n})$ | $O(1)$                            | &cross; |
 
 ### Benchmarks
 ```
@@ -23,4 +24,5 @@ BenchmarkSelectionSort-4              14          79558421 ns/op               0
 BenchmarkInsertionSort-4              25          45179228 ns/op               0 B/op          0 allocs/op
 BenchmarkQuickSort-4                1870            640991 ns/op               0 B/op          0 allocs/op
 BenchmarkMergeSort-4                1287            936073 ns/op         1112704 B/op       9999 allocs/op
+BenchmarkHeapSort-4                 1573            754824 ns/op               0 B/op          0 allocs/op
 ```

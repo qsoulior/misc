@@ -2,10 +2,12 @@
 // It provides sort and search algorithms.
 package slice
 
-import "math/rand"
+import (
+	"math/rand"
+)
 
 // BubbleSort sorts slice s in order as determined by cmp function.
-// It uses bubble sort algorithm with complexity O(n^2).
+// It uses bubble sorting algorithm with complexity O(n^2).
 // cmp should return 0 if a is equal b, a negative number if a precedes b,
 // or a positive number if a follows b.
 func BubbleSort[S ~[]E, E any](s S, cmp func(a E, b E) int) {
@@ -23,7 +25,7 @@ func BubbleSort[S ~[]E, E any](s S, cmp func(a E, b E) int) {
 }
 
 // CocktailSort sorts slice s in order as determined by cmp function.
-// It uses cocktail sort (bidirectional bubble sort) algorithm with complexity O(n^2).
+// It uses cocktail sorting (bidirectional bubble sorting) algorithm with complexity O(n^2).
 // cmp should return 0 if a is equal b, a negative number if a precedes b,
 // or a positive number if a follows b.
 func CocktailSort[S ~[]E, E any](s S, cmp func(a E, b E) int) {
@@ -56,7 +58,7 @@ func CocktailSort[S ~[]E, E any](s S, cmp func(a E, b E) int) {
 }
 
 // CombSort sorts slice s in order as determined by cmp function.
-// It uses comb sort (modification of bubble sort) algorithm with complexity O(n^2),
+// It uses comb sorting (modification of bubble sorting) algorithm with complexity O(n^2),
 // where p is number of increments.
 // cmp should return 0 if a is equal b, a negative number if a precedes b,
 // or a positive number if a follows b.
@@ -83,7 +85,7 @@ func CombSort[S ~[]E, E any](s S, cmp func(a E, b E) int) {
 }
 
 // SelectionSort sorts slice s in order as determined by cmp function.
-// It uses selection sort algorithm with complexity O(n^2).
+// It uses selection sorting algorithm with complexity O(n^2).
 // cmp should return 0 if a is equal b, a negative number if a precedes b,
 // or a positive number if a follows b.
 func SelectionSort[S ~[]E, E any](s S, cmp func(a E, b E) int) {
@@ -105,7 +107,7 @@ func SelectionSort[S ~[]E, E any](s S, cmp func(a E, b E) int) {
 }
 
 // InsertionSort sorts slice s in order as determined by cmp function.
-// It uses insertion sort algorithm with complexity O(n^2).
+// It uses insertion sorting algorithm with complexity O(n^2).
 // cmp should return 0 if a is equal b, a negative number if a precedes b,
 // or a positive number if a follows b.
 func InsertionSort[S ~[]E, E any](s S, cmp func(a E, b E) int) {
@@ -126,7 +128,7 @@ func InsertionSort[S ~[]E, E any](s S, cmp func(a E, b E) int) {
 }
 
 // QuickSort sorts slice s in order as determined by cmp function.
-// It uses recursive quick sort algorithm with complexity O(n*log(n)).
+// It uses recursive quick sorting algorithm with complexity O(n*log(n)).
 // cmp should return 0 if a is equal b, a negative number if a precedes b,
 // or a positive number if a follows b.
 func QuickSort[S ~[]E, E any](s S, cmp func(a E, b E) int) {
@@ -162,7 +164,7 @@ func QuickSort[S ~[]E, E any](s S, cmp func(a E, b E) int) {
 }
 
 // MergeSort sorts slice s in order as determined by cmp function.
-// It uses recursive merge sort algorithm with complexity O(n*log(n)).
+// It uses recursive merge sorting algorithm with complexity O(n*log(n)).
 // cmp should return 0 if a is equal b, a negative number if a precedes b,
 // or a positive number if a follows b.
 func MergeSort[S ~[]E, E any](s S, cmp func(a E, b E) int) {
@@ -195,4 +197,47 @@ func MergeSort[S ~[]E, E any](s S, cmp func(a E, b E) int) {
 
 	// Copy elements from buffer to result slice.
 	copy(s, buf)
+}
+
+// siftDown moves element of slice s with index i to correct position in max heap.
+// It compares and swaps element with one of its children.
+// Used in heap sorting algorithm.
+func siftDown[S ~[]E, E any](s S, i int, cmp func(a E, b E) int) {
+	n := len(s)
+	for 2*i+1 < n {
+		j := 2*i + 1 // index of the largest child (left by default)
+		if r := j + 1; r < n && cmp(s[r], s[j]) > 0 {
+			j = r // index of right child
+		}
+
+		// If parent is greater than or equal to the largest child,
+		// then it has correct position.
+		if cmp(s[i], s[j]) >= 0 {
+			break
+		}
+
+		// Swap parent with the largest child.
+		s[i], s[j] = s[j], s[i]
+		i = j
+	}
+}
+
+// HeapSort sorts slice s in order as determined by cmp function.
+// It uses heap sorting algorithm with complexity O(n*log(n)).
+// cmp should return 0 if a is equal b, a negative number if a precedes b,
+// or a positive number if a follows b.
+func HeapSort[S ~[]E, E any](s S, cmp func(a E, b E) int) {
+	n := len(s)
+	// Build max heap from slice with complexity O(n).
+	for i := n/2 - 1; i >= 0; i-- {
+		siftDown(s, i, cmp)
+	}
+
+	for i := n - 1; i >= 0; i-- {
+		// Swap the largest element with the last one.
+		s[0], s[i] = s[i], s[0]
+
+		// Move the new first element to correct position in heap.
+		siftDown(s[:i], 0, cmp)
+	}
 }
