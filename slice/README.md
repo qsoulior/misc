@@ -1,12 +1,23 @@
 ## Search algorithms
 
+### Comparison table
+| Algorithm                                     | Time: best | Time: average      | Time: worst   | Space: worst |
+| --------------------------------------------- | ---------- | ------------------ | ------------- | ------------ |
+| Linear search                                 | $O(1)$     | $O(n)$             | $O(n)$        | $O(1)$       |
+| Binary search                                 | $O(1)$     | $O(\log{n})$       | $O(\log{n})$  | $O(1)$       |
+| Jump search                                   | $O(1)$     | $O(\sqrt{n})$      | $O(\sqrt{n})$ | $O(1)$       |
+| Interpolation search                          | $O(1)$     | $O(\log{\log{n}})$ | $O(n)$        | $O(1)$       |
+| Exponential search<br>($i$ is target index)   | $O(1)$     | $O(\log{i})$        | $O(\log{i})$   | $O(1)$       |
+
 ### Benchmarks
 ```
 go test -bench Search -benchmem -cpu 4
 
-BenchmarkLinearSearch-4             1810            685498 ns/op               0 B/op          0 allocs/op
-BenchmarkBinarySearch-4         276558870                4.212 ns/op           0 B/op          0 allocs/op
-BenchmarkJumpSearch-4            1476360               816.8 ns/op             0 B/op          0 allocs/op
+BenchmarkLinearSearch-4                     1083           1105591 ns/op               0 B/op          0 allocs/op
+BenchmarkBinarySearch-4                 46733702                24.46 ns/op            0 B/op          0 allocs/op
+BenchmarkJumpSearch-4                    1000000              1467 ns/op               0 B/op          0 allocs/op
+BenchmarkInterpolationSearch-4          100000000               11.72 ns/op            0 B/op          0 allocs/op
+BenchmarkExponentialSearch-4            23490996                56.21 ns/op            0 B/op          0 allocs/op
 ```
 
 
